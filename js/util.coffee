@@ -2,10 +2,10 @@ if not window.util then window.util = {}
 _.merge window.util,
   mainStations: ["court","floor","porch"]
   
-  mainStationPath: (user = window.urb.user) -> 
-    "~#{user}/#{window.util.mainStation(user)}"
+  mainStationPath: (user) -> "~#{user}/#{window.util.mainStation(user)}"
 
-  mainStation: (user = window.urb.ship) ->
+  mainStation: (user) ->
+    if not user then user = window.urb.user
     switch user.length
       when 3
         return "court"
@@ -14,24 +14,16 @@ _.merge window.util,
       when 13
         return "porch"
 
-  getGlyph: (glyphs, audi)->
-    glyphs[audi.join " "] or switch
-      when not _.contains audi, window.util.mainStationPath()
-        "*"
-      when audi.length is 1
-        ":"
-      else ";"
-      
   clipAudi: (audi) ->
     audi = audi.join " "
-    ms = window.util.mainStationPath()
+    ms = window.util.mainStationPath window.urb.user
     regx = new RegExp "/#{ms}","g"
     audi = audi.replace regx,""
     audi.split " "
 
   expandAudi: (audi) ->
     audi = audi.join " "
-    ms = window.util.mainStationPath()
+    ms = window.util.mainStationPath window.urb.user
     if audi.indexOf(ms) is -1 
       if audi.length > 0
         audi += " "
@@ -74,17 +66,7 @@ _.merge window.util,
       window.talk.MessagePersistence.sendMessage _message,send
     send()
 
-  getScroll: ->
-    @writingPosition = $('#c').outerHeight(true)+$('#c').offset().top-$(window).height()
-
-  setScroll: ->
-    window.util.getScroll()
-    $(window).scrollTop($("#c").height())
-
-  isScrolling: ->
-    if not window.util.writingPosition
-      window.util.getScroll()
-    return ($(window).scrollTop()+$('#writing').outerHeight() < window.util.writingPosition)
+  scrollToBottom: -> $(window).scrollTop($("#c").height())
 
   checkScroll: ->
     if window.util.isScrolling()

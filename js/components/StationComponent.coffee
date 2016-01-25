@@ -1,18 +1,22 @@
 recl = React.createClass
+rele = React.createElement
 {div,style,input,textarea,h1,a} = React.DOM
 
+MessageStore    = require '../stores/MessageStore.coffee'
 StationStore    = require '../stores/StationStore.coffee'
 StationActions  = require '../actions/StationActions.coffee'
 Member          = require './MemberComponent.coffee'
+Load            = require './LoadComponent.coffee'
 
 module.exports = recl
   displayName: "Station"
   stateFromStore: -> {
     audi:StationStore.getAudience()
     members:StationStore.getMembers()
-    station:window.talk.mainStation
+    station:window.util.mainStation()
     stations:StationStore.getStations()
     configs:StationStore.getConfigs()
+    fetching:MessageStore.getFetching()
     typing:StationStore.getTyping()
     listening:StationStore.getListening()
   }
@@ -35,22 +39,14 @@ module.exports = recl
     @setState @stateFromStore()
 
   _toggleOpen: (e) ->
-    if $(e.target).closest('.sour-ctrl').length > 0
-      return
-    $("#station-container").toggleClass 'open'
+    if $(e.target).closest('.sour-ctrl').length is 0
+      $("#station-container").toggleClass 'open'
 
   validateSource: (s) ->
-    if @state.configs[@state.station].sources.indexOf(s) isnt -1
-      return false
-    if s.length < 5
-      return false
-    if s[0] isnt "~"
-      return false
-    if s.indexOf("/") is -1
-      return false
-    return true
+    {sources} = @state.configs[@state.station]
+    s not in sources and "/" in s and s[0] is "~" and s.length >= 5
 
-  _keyUp: (e) ->
+  onKeyUp: (e) ->
     $('.sour-ctrl .join').removeClass 'valid-false'
     if e.keyCode is 13
       v = @$input.val().toLowerCase()
@@ -73,33 +69,25 @@ module.exports = recl
     StationActions.setSources @state.station,_sources
 
   render: ->
-    if window.urb.user isnt window.urb.ship #foreign
-      return div {id:"station"}
-    
     parts = []
     members = []
 
-    if @state.station and @state.members
-      members = _.map @state.members, (stations,member) -> 
-          audi = _.map stations,(presence,station) -> (div {className:"audi"}, station.slice(1))
-          (div {}, [(React.createElement Member, {ship:member}),audi])
-    else
-      members = ""
+    members = unless @state.station and @state.members
+        ""
+      else for member, stations of @state.members
+        (div {},
+           (rele Member, {ship:member})
+           for station, presence of stations
+             (div {className:"audi"}, station.slice(1))
+        )
 
-    sourceInput = [(input {className:"join",onKeyUp:@_keyUp,placeholder:"+"})]
-    sourceCtrl = div {className:"sour-ctrl"},sourceInput
-
-    sources = []
-    if @state.station and @state.configs[@state.station]
-      _remove = @_remove
-      _sources = _.clone @state.configs[@state.station].sources
-      sources = _.map _sources,(source) =>
-        (div {className:"station"}, [
+    sources = unless @state.station and @state.configs[@state.station]
+        ""
+      else for source in @state.configs[@state.station].sources
+        (div {className:"station"},
           (div {className:"path"}, source.slice(1))
-          (div {className:"remove",onClick:_remove,"data-station":source},"×"),
-        ])
-    else
-      sources = "" 
+          (div {className:"remove",onClick:@_remove,"data-station":source},"×"),
+        )
 
     (div {id:"station",onClick:@_toggleOpen},
       (div {id:"head"}, 
@@ -107,6 +95,7 @@ module.exports = recl
           div {className:"sig"}
           div {className:"ship"},"#{window.urb.user}"
         )
+        (rele Load, {})  if @state.fetching
         (div {id:"where"},
           div {className:"slat"},"talk"
           div {className:"path"} #, window.util.mainStation(window.urb.user))
@@ -114,6 +103,11 @@ module.exports = recl
         )
         div {id:"offline"}, "Warning: no connection to server."
       )
-      div {id:"stations"}, (h1 {}, "Listening to"),(div {},sources),sourceCtrl
+      (div {id:"stations"},
+        h1 {}, "Listening to"
+        div {}, sources
+        div {className:"sour-ctrl"},
+          input {className:"join",@onKeyUp,placeholder:"+"}
+      )
       div {id:"audience"}, div {}, (h1 {}, "Talking to"),(div {id:"members"},members)
     )

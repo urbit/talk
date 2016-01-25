@@ -1,42 +1,35 @@
-$(() ->
-  StationActions = require './actions/StationActions.coffee' #start poll
+StationActions = require './actions/StationActions.coffee'
 
-  rend = React.render
-  
-  window.talk.online = yes
+# window.talk.online = yes
 
-  setInterval (->
-    window.talk.online = window.urb.poll.dely < 500
-    if window.talk.online
-      $('body').removeClass 'offline'
-    else $('body').addClass 'offline'
-  ), 300
+# setInterval (->
+#   window.talk.online = window.urb.poll.dely < 500
+#   if window.talk.online
+#     $('body').removeClass 'offline'
+#   else $('body').addClass 'offline'
+# ), 300
 
-  require './util.coffee'
-  require './move.coffee'
+# checkScroll = ->
+#   if $(window).scrollTop() > 20
+#     $('#nav').addClass 'scrolling'
+#   else
+#     $('#nav').removeClass 'scrolling'
+# setInterval checkScroll, 500
 
-  # checkScroll = ->
-  #   if $(window).scrollTop() > 20
-  #     $('#nav').addClass 'scrolling'
-  #   else
-  #     $('#nav').removeClass 'scrolling'
-  # setInterval checkScroll, 500
-  
 
-  StationActions.listen()
+StationComponent    = React.createFactory require './components/StationComponent.coffee'
+MessagesComponent   = React.createFactory require './components/MessagesComponent.coffee'
+WritingComponent    = React.createFactory require './components/WritingComponent.coffee'
 
-  StationComponent    = require './components/StationComponent.coffee'
-  MessagesComponent   = require './components/MessagesComponent.coffee'
-  WritingComponent    = require './components/WritingComponent.coffee'
+{div} = React.DOM
 
-  $c = $('#c')
+window.tree.components.talk = React.createClass
+  displayName:"talk"
 
-  # clean = ->  # ??
-  #   React.unmountComponentAtNode $('#station-container')[0]
-  #   React.unmountComponentAtNode $('#messages-container')[0]
-  #   React.unmountComponentAtNode $('#writing-container')[0]
-
-  rend (React.createElement(StationComponent, {})),$('#station-container')[0]
-  rend (React.createElement(MessagesComponent, {})),$('#messages-container')[0]
-  rend (React.createElement(WritingComponent, {})),$('#writing-container')[0]
-)
+  componentWillMount: -> 
+    require './util.coffee'
+    require './move.coffee'
+    StationActions.listen()
+  render: ->
+    (div {className:'grams', key:"grams-container"}, (MessagesComponent {key:"grams"}, ""))
+    # (div {className:'message',key:'message'}, (WritingComponent {}, ""))
