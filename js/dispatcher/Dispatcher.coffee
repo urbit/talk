@@ -1,6 +1,4 @@
-Dispatcher = require('flux').Dispatcher
-
-module.exports = _.merge new Dispatcher(), {
+module.exports = _.extend new Flux.Dispatcher(), {
 	handleServerAction: (action) ->
 		@dispatch
 			source: 'server'

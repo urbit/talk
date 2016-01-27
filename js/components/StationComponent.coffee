@@ -34,7 +34,6 @@ module.exports = recl
   componentWillUnmount: ->
     StationStore.removeChangeListener @_onChangeStore
 
-
   _onChangeStore: -> 
     @setState @stateFromStore()
 

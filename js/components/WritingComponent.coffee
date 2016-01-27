@@ -63,18 +63,17 @@ Audience = recl
         ,0
       return false
   render: ->
-    div {
-          id:"audi"
-          className:"audi valid-#{@props.valid}"
+    div {className:'audience',id:'audience'}, (div {
+          className:"input valid-#{@props.valid}"
           contentEditable:true
           @onKeyDown
           onBlur:@props.onBlur
-        }, @props.audi.join(" ")
+        }, @props.audi.join(" "))
 
 module.exports = recl
   displayName: "Writing"
   set: ->
-    if window.localStorage and @$writing then window.localStorage.setItem 'writing', @$writing.text()
+    if window.localStorage and @$message then window.localStorage.setItem 'writing', @$message.text()
 
   get: ->
     if window.localStorage then window.localStorage.getItem 'writing'
@@ -98,7 +97,7 @@ module.exports = recl
       StationActions.setTyping @state.station,state
 
   onBlur: -> 
-    @$writing.text @$writing.text()
+    @$message.text @$message.text()
     MessageActions.setTyping false
     @typing false
 
@@ -120,25 +119,25 @@ module.exports = recl
 
   sendMessage: ->
     if @_validateAudi() is false
-      $('#audi').focus()
+      $('#audience').focus()
       return
-    if @state.audi.length is 0 and $('#audi').text().trim().length > 0
+    if @state.audi.length is 0 and $('#audience').text().trim().length > 0
       audi = if @_setAudi() then @_setAudi() else @state.ludi
     else
       audi = @state.audi    
     audi = @addCC audi
-    txt = @$writing.text().trim().replace(/\xa0/g,' ')
+    txt = @$message.text().trim().replace(/\xa0/g,' ')
     MessageActions.sendMessage txt,audi
-    @$writing.text('')
+    @$message.text('')
     @setState length:0
     @set()
     @typing false
 
   onKeyUp: (e) ->
-    if not window.urb.util.isURL @$writing.text()
-      @setState lengthy: (@$writing.text().length > 62)
+    if not window.urb.util.isURL @$message.text()
+      @setState lengthy: (@$message.text().length > 62)
     # r = window.getSelection().getRangeAt(0).cloneRange()
-    # @$writing.text @$writing.text()
+    # @$message.text @$message.text()
     # setTimeout => 
     #     s = window.getSelection()
     #     s.removeAllRanges()
@@ -148,7 +147,7 @@ module.exports = recl
   
   onKeyDown: (e) ->
     if e.keyCode is 13
-      txt = @$writing.text()
+      txt = @$message.text()
       e.preventDefault()
       if txt.length > 0
         if window.talk.online
@@ -163,7 +162,7 @@ module.exports = recl
     @set()
 
   onInput: (e) ->
-    text   = @$writing.text()
+    text   = @$message.text()
     length = text.length
     # geturl = new RegExp [
     #  '(^|[ \t\r\n])((ftp|http|https|gopher|mailto|'
@@ -195,7 +194,7 @@ module.exports = recl
       _.all (ship.match /[a-z]{3}/g), (a)-> -1 isnt PO.indexOf a
 
   _validateAudi: ->
-    v = $('#audi').text()
+    v = $('#audience').text()
     v = v.trim()
     if v.length is 0 
       return true
@@ -207,7 +206,7 @@ module.exports = recl
     valid = @_validateAudi()
     StationActions.setValidAudience valid
     if valid is true
-      stan = $('#audi').text() || window.util.mainStationPath window.urb.user
+      stan = $('#audience').text() || window.util.mainStationPath window.urb.user
       stan = (stan.split /\ +/).map (v)->
         if v[0] is "~" then v else "~"+v
       StationActions.setAudience stan
@@ -224,7 +223,7 @@ module.exports = recl
 
   cursorAtEnd: ->
     range = document.createRange()
-    range.selectNodeContents @$writing[0]
+    range.selectNodeContents @$message[0]
     range.collapse(false)
     selection = window.getSelection()
     selection.removeAllRanges()
@@ -234,11 +233,11 @@ module.exports = recl
     window.util.sendMessage = @sendMessage
     StationStore.addChangeListener @_onChangeStore
     MessageStore.addChangeListener @_onChangeStore
-    @$el = $ @getDOMNode()
-    @$writing = $('#writing')
-    @$writing.focus()
+    @$el = $ ReactDOM.findDOMNode @
+    @$message = $('#message .input')
+    @$message.focus()
     if @get() 
-      @$writing.text @get()
+      @$message.text @get()
       @onInput()
     @interval = setInterval =>
         @$el.find('.time').text @getTime()
@@ -261,19 +260,15 @@ module.exports = recl
     for k,v of audi
       audi[k] = v.slice(1)
 
-    k = "writing"
-
-    div {className:k}, [
-      (div {className:"attr"}, [
-        (React.createElement Member, iden)
-        (React.createElement Audience, {audi,valid:@state.valid, onBlur:@_setAudi})
-        (div {className:"time"}, @getTime())        
-      ])
-      (div {
-          id:"writing"
+    div {className:'writing'}, [
+      (React.createElement Audience, {audi,valid:@state.valid, onBlur:@_setAudi})
+      (div {className:'message',id:'message',key:'message'}, 
+        (div {
+          className:'input'
           contentEditable:true
           onPaste: @onInput
           @onInput, @onFocus, @onBlur, @onKeyDown, @onKeyUp
         }, "")
-       (div {id:"length"}, "#{@state.length}/64 (#{Math.ceil @state.length / 64})")
-      ]
+      )
+      (div {className:'length',key:'length'}, "#{@state.length}/64 (#{Math.ceil @state.length / 64})")
+    ]

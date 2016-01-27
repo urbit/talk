@@ -2,7 +2,7 @@ moment = require 'moment-timezone'
 clas = require 'classnames'
 
 recl = React.createClass
-{div,pre,a} = React.DOM
+{li,div,pre,a,label,h2,h3} = React.DOM
 
 Member          = require './MemberComponent.coffee'
 
@@ -57,7 +57,7 @@ module.exports = recl
     mainStation = window.util.mainStationPath(window.urb.user)
     type = if mainStation in aude then 'private' else 'public'
 
-    className = clas 'message',
+    className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
       (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
       {say: speech.lin?.say is false, url: speech.url, 'new': @props.unseen},
@@ -65,16 +65,16 @@ module.exports = recl
         when speech.app? then "say"
         when speech.exp? then "exp"
         
-    (div {className, 'data-index':@props.index, key:"message"},
-        (div {className:"attr",key:"attr"},
-          div {className:"type #{type}",key:"glyph","data-glyph":(@props.glyph || "*")}
-          (div {onClick:@_handlePm,key:"member"},
+    (li {className, 'data-index':@props.index, key:"message"},
+        (div {className:"meta",key:"meta"},
+          label {className:"type #{type}",key:"glyph","data-glyph":(@props.glyph || "*")}
+          (h2 {className:'author planet',onClick:@_handlePm,key:"member"},
            (React.createElement Member,{ship:@props.ship,glyph:@props.glyph,key:"member"})
           )
-          div {onClick:@_handleAudi,className:"audi",key:"audi"}, audi
-          div {className:"time",key:"time"}, @convTime thought.statement.date
+          h3 {className:"path",onClick:@_handleAudi,key:"audi"}, audi
+          h3 {className:"time",key:"time"}, @convTime thought.statement.date
         )
-        (div {className:"mess",key:"mess"}, 
+        (div {className:"speech",key:"speech"}, 
           @renderSpeech speech
           if attachments.length
             div {className:"fat",key:"fat"}, attachments

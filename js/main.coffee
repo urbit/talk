@@ -1,13 +1,13 @@
 StationActions = require './actions/StationActions.coffee'
 
-# window.talk.online = yes
+window.talk = {online:yes}
 
-# setInterval (->
-#   window.talk.online = window.urb.poll.dely < 500
-#   if window.talk.online
-#     $('body').removeClass 'offline'
-#   else $('body').addClass 'offline'
-# ), 300
+setInterval (->
+  window.talk.online = window.urb.poll.dely < 500
+  if window.talk.online
+    $('body').removeClass 'offline'
+  else $('body').addClass 'offline'
+), 300
 
 # checkScroll = ->
 #   if $(window).scrollTop() > 20
@@ -21,7 +21,7 @@ StationComponent    = React.createFactory require './components/StationComponent
 MessagesComponent   = React.createFactory require './components/MessagesComponent.coffee'
 WritingComponent    = React.createFactory require './components/WritingComponent.coffee'
 
-{div} = React.DOM
+{div,link} = React.DOM
 
 window.tree.components.talk = React.createClass
   displayName:"talk"
@@ -30,6 +30,10 @@ window.tree.components.talk = React.createClass
     require './util.coffee'
     require './move.coffee'
     StationActions.listen()
+    StationActions.listenStation window.util.mainStation()
+
   render: ->
-    (div {className:'grams', key:"grams-container"}, (MessagesComponent {key:"grams"}, ""))
-    # (div {className:'message',key:'message'}, (WritingComponent {}, ""))
+    (div {}, [
+      (div {key:"grams-container"}, (MessagesComponent {key:'grams'}, ''))
+      (div {key:'writing-container'}, (WritingComponent {key:'writing'}, ''))
+    ])
