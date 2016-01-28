@@ -20,22 +20,17 @@ module.exports = recl
     typing:StationStore.getTyping()
     listening:StationStore.getListening()
   }
-
   getInitialState: -> @stateFromStore()
-
   componentDidMount: ->
     @$el = $(@getDOMNode())
     @$input = @$el.find('input')
 
     StationStore.addChangeListener @_onChangeStore
     if @state.listening.indexOf(@state.station) is -1
-      StationActions.listenStation @state.station
-      
+      StationActions.listenStation @state.station      
   componentWillUnmount: ->
     StationStore.removeChangeListener @_onChangeStore
-
-  _onChangeStore: -> 
-    @setState @stateFromStore()
+  _onChangeStore: -> @setState @stateFromStore()
 
   _toggleOpen: (e) ->
     if $(e.target).closest('.sour-ctrl').length is 0

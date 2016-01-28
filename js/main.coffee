@@ -29,8 +29,11 @@ window.tree.components.talk = React.createClass
   componentWillMount: -> 
     require './util.coffee'
     require './move.coffee'
+
     StationActions.listen()
     StationActions.listenStation window.util.mainStation()
+
+    window.tree.actions.setNav "Talk",false,false,StationComponent
 
   render: ->
     (div {}, [
