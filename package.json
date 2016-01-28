@@ -1,0 +1,40 @@
+{
+  "name": "urbit-talk",
+  "version": "0.0.0",
+  "description": "urbit talk module",
+  "main": "main.js",
+  "dependencies": {
+    "classnames": "^2.2.0",
+    "coffeeify": "2.0.1",
+    "husl": "^6.0.1",
+    "lodash": "~2.4.1",
+    "moment-timezone": "~0.2.4",
+    "react-infinite": "^0.7.1",
+    "envify": "^3.4.0",
+    "watchify": "^3.7.0",
+    "node-sass": "^3.4.2"
+  },
+  "browserify": {
+    "transform": [
+      "coffeeify"
+    ]
+  },
+  "scripts": {
+    "watch": "sh build/watch.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/urbit/tree"
+  },
+  "contributors": [
+    {
+      "name": "galen wolfe-pauly",
+      "email": "galen@tlon.io"
+    },
+    {
+      "name": "anton dyudin",
+      "email": "anton@tlon.io"
+    }
+  ],
+  "license": "MIT"
+}
