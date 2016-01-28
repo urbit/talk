@@ -2,7 +2,7 @@ moment = require 'moment-timezone'
 clas = require 'classnames'
 
 recl = React.createClass
-{li,div,pre,a,label,h2,h3} = React.DOM
+{div,pre,a,label,h2,h3} = React.DOM
 
 Member          = require './MemberComponent.coffee'
 
@@ -65,7 +65,7 @@ module.exports = recl
         when speech.app? then "say"
         when speech.exp? then "exp"
         
-    (li {className, 'data-index':@props.index, key:"message"},
+    (div {className, 'data-index':@props.index, key:"message"},
         (div {className:"meta",key:"meta"},
           label {className:"type #{type}",key:"glyph","data-glyph":(@props.glyph || "*")}
           (h2 {className:'author planet',onClick:@_handlePm,key:"member"},

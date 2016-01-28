@@ -1,7 +1,7 @@
 Infinite = null
 
 recl = React.createClass
-{ul} = React.DOM
+{div} = React.DOM
 
 MessageActions  = require '../actions/MessageActions.coffee'
 MessageStore    = require '../stores/MessageStore.coffee'
@@ -9,7 +9,7 @@ StationActions  = require '../actions/StationActions.coffee'
 StationStore    = require '../stores/StationStore.coffee'
 Message         = require './MessageComponent.coffee'
 
-MESSAGE_HEIGHT = 48 # XX measure
+MESSAGE_HEIGHT = 36 # XX measure
 
 module.exports = recl
   displayName: "Messages"
@@ -145,7 +145,7 @@ module.exports = recl
         unseen: lastIndex and lastIndex is index
       })
         
-    (ul {className:"grams", key:"messages"},
+    (div {className:"grams", key:"messages"},
       React.createElement Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight
