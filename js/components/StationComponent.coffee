@@ -1,6 +1,8 @@
+clas        = require 'classnames'
+
 recl = React.createClass
 rele = React.createElement
-{div,style,input,textarea,h1,a} = React.DOM
+{div,style,input,textarea,h1,h2,label,span,a} = React.DOM
 
 MessageStore    = require '../stores/MessageStore.coffee'
 StationStore    = require '../stores/StationStore.coffee'
@@ -22,7 +24,7 @@ module.exports = recl
   }
   getInitialState: -> @stateFromStore()
   componentDidMount: ->
-    @$el = $(@getDOMNode())
+    @$el = $(ReactDOM.findDOMNode())
     @$input = @$el.find('input')
 
     StationStore.addChangeListener @_onChangeStore
@@ -66,42 +68,79 @@ module.exports = recl
     parts = []
     members = []
 
-    members = unless @state.station and @state.members
-        ""
-      else for member, stations of @state.members
-        (div {},
-           (rele Member, {ship:member})
-           for station, presence of stations
-             (div {className:"audi"}, station.slice(1))
-        )
+    # members = unless @state.station and @state.members
+    #     ""
+    #   else for member, stations of @state.members
+    #     (div {},
+    #        (rele Member, {ship:member})
+    #        for station, presence of stations
+    #          (div {className:"audi"}, station.slice(1))
+    #     )
 
-    sources = unless @state.station and @state.configs[@state.station]
-        ""
-      else for source in @state.configs[@state.station].sources
-        (div {className:"station"},
-          (div {className:"path"}, source.slice(1))
-          (div {className:"remove",onClick:@_remove,"data-station":source},"×"),
-        )
+    # sources = unless @state.station and @state.configs[@state.station]
+    #     ""
+    #   else for source in @state.configs[@state.station].sources
+    #     (div {className:"station"},
+    #       (div {className:"path"}, source.slice(1))
+    #       (div {className:"remove",onClick:@_remove,"data-station":source},"×"),
+    #     )
 
-    (div {id:"station",onClick:@_toggleOpen},
-      (div {id:"head"}, 
-        (div {id:"who"},
-          div {className:"sig"}
-          div {className:"ship"},"#{window.urb.user}"
-        )
-        (rele Load, {})  if @state.fetching
-        (div {id:"where"},
-          div {className:"slat"},"talk"
-          div {className:"path"} #, window.util.mainStation(window.urb.user))
-          div {className:"caret"}
-        )
-        div {id:"offline"}, "Warning: no connection to server."
-      )
-      (div {id:"stations"},
-        h1 {}, "Listening to"
-        div {}, sources
-        div {className:"sour-ctrl"},
-          input {className:"join",@onKeyUp,placeholder:"+"}
-      )
-      div {id:"audience"}, div {}, (h1 {}, "Talking to"),(div {id:"members"},members)
-    )
+    _clas = clas
+      open:(@props.open is true)
+      'col-md-4':true
+      menu:true
+      'depth-1':true
+
+    (div {className:_clas, key:'station'}, [
+      (div {className:"contents"}, [
+        (div {className:"close"}, "✕")
+        (h2 {}, [
+          (span {}, "Direct")
+          (label {className:"sum"}, 3)
+        ])
+        (div {}, [
+          (div {className:"name"}, "Galen")
+          (div {className:"planet"}, "~talsur-todres")
+        ])
+        (div {className:"action create"}, [
+          (label {}, "")
+          (span {}, "Message")
+        ])
+        (h2 {}, [
+          (span {}, "Stations")
+          (label {className:"sum"}, 4)
+        ])
+        (div {}, [
+          (div {className:"room"}, "/meta")
+          (div {className:"room"}, "/help")
+          (div {className:"room"}, "~talsur-todres/room")
+          (div {className:"action add"}, [
+            (label {}, "")
+            (span {}, "Listen")
+          ])
+        ])
+      ])
+    ])
+
+    # (div {id:"station",onClick:@_toggleOpen},
+    #   (div {id:"head"}, 
+    #     (div {id:"who"},
+    #       div {className:"sig"}
+    #       div {className:"ship"},"#{window.urb.user}"
+    #     )
+    #     (rele Load, {})  if @state.fetching
+    #     (div {id:"where"},
+    #       div {className:"slat"},"talk"
+    #       div {className:"path"} #, window.util.mainStation(window.urb.user))
+    #       div {className:"caret"}
+    #     )
+    #     div {id:"offline"}, "Warning: no connection to server."
+    #   )
+    #   (div {id:"stations"},
+    #     h1 {}, "Listening to"
+    #     div {}, sources
+    #     div {className:"sour-ctrl"},
+    #       input {className:"join",@onKeyUp,placeholder:"+"}
+    #   )
+    #   div {id:"audience"}, div {}, (h1 {}, "Talking to"),(div {id:"members"},members)
+    # )

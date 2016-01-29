@@ -1,4 +1,5 @@
 StationActions = require './actions/StationActions.coffee'
+TreeActions = window.tree.actions
 
 window.talk = {online:yes}
 
@@ -23,17 +24,21 @@ WritingComponent    = React.createFactory require './components/WritingComponent
 
 {div,link} = React.DOM
 
-window.tree.components.talk = React.createClass
+TreeActions.registerComponent "talk", React.createClass
   displayName:"talk"
 
   componentWillMount: -> 
-    require './util.coffee'
-    require './move.coffee'
+    require './utils/util.coffee'
+    require './utils/move.coffee'
 
     StationActions.listen()
     StationActions.listenStation window.util.mainStation()
 
-    window.tree.actions.setNav "Talk",false,false,StationComponent
+    TreeActions.setNav 
+      title:"Talk"
+      dpad:false
+      sibs:false
+      subnav:StationComponent
 
   render: ->
     (div {}, [
