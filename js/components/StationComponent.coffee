@@ -87,7 +87,9 @@ module.exports = recl
 
     _clas = clas
       open:(@props.open is true)
+      closed:(@props.open isnt true)
       'col-md-4':true
+      'col-md-offset-2':true
       menu:true
       'depth-1':true
 
