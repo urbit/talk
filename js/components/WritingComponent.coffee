@@ -63,8 +63,9 @@ Audience = recl
         ,0
       return false
   render: ->
-    div {className:'audience',id:'audience'}, (div {
+    div {className:'audience',id:'audience',key:'audience'}, (div {
           className:"input valid-#{@props.valid}"
+          key:'input'
           contentEditable:true
           @onKeyDown
           onBlur:@props.onBlur
@@ -260,7 +261,7 @@ module.exports = recl
     for k,v of audi
       audi[k] = v.slice(1)
 
-    div {className:'writing'}, [
+    div {className:'writing',key:'writing'}, [
       (React.createElement Audience, {audi,valid:@state.valid, onBlur:@_setAudi})
       (div {className:'message',id:'message',key:'message'}, 
         (div {

@@ -41,7 +41,7 @@ TreeActions.registerComponent "talk", React.createClass
       subnav:StationComponent
 
   render: ->
-    (div {}, [
+    (div {key:"talk-container"}, [
       (div {key:"grams-container"}, (MessagesComponent {key:'grams'}, ''))
       (div {key:'writing-container'}, (WritingComponent {key:'writing'}, ''))
     ])

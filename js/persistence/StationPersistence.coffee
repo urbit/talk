@@ -11,7 +11,7 @@ module.exports = ({StationActions})->
 
   removeStation: (name,cb) -> design name, null, cb
   setSources: (station,ship,sources) ->
-    cordon = posture:"white", list:[]
+    cordon = posture:"black", list:[]
     design station, {sources,cordon,caption:""}, (err,res) ->
       console.log 'talk-command'
       console.log arguments

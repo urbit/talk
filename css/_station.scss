@@ -1,0 +1,37 @@
+@import "../bootstrap/scss/_custom.scss";
+
+input.action {
+  background-color: transparent;
+  border-color: transparent;
+  font-family: 'scp';
+  font-size: .8rem;
+}
+
+input.action.valid-false {
+  color: $red;
+}
+
+input.action { @include placeholder { 
+  color: #000; 
+  font-family: 'bau';
+  font-size: 1rem;
+}}
+input.action:focus { @include placeholder { color: transparent; }}
+
+.room .close {
+  display: none;
+  margin: 0;
+  float: none;
+  margin-left: .6rem;
+  font-weight: 600;
+  font-size: .8rem;
+  color: $red;
+}
+
+.room:hover .close {
+  display: inline;
+}
+
+.room.disabled {
+  opacity: .6;
+}

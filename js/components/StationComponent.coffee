@@ -2,7 +2,7 @@ clas        = require 'classnames'
 
 recl = React.createClass
 rele = React.createElement
-{div,style,input,textarea,h1,h2,label,span,a} = React.DOM
+{div,style,input,h1,h2,label,span,a} = React.DOM
 
 MessageStore    = require '../stores/MessageStore.coffee'
 StationStore    = require '../stores/StationStore.coffee'
@@ -25,8 +25,6 @@ module.exports = recl
   getInitialState: -> @stateFromStore()
   componentDidMount: ->
     @$el = $(ReactDOM.findDOMNode())
-    @$input = @$el.find('input')
-
     StationStore.addChangeListener @_onChangeStore
     if @state.listening.indexOf(@state.station) is -1
       StationActions.listenStation @state.station      
@@ -43,26 +41,30 @@ module.exports = recl
     s not in sources and "/" in s and s[0] is "~" and s.length >= 5
 
   onKeyUp: (e) ->
-    $('.sour-ctrl .join').removeClass 'valid-false'
+    $('.menu.depth-1 .add').removeClass 'valid-false'
     if e.keyCode is 13
-      v = @$input.val().toLowerCase()
+      $input = $(e.target)
+      v = $input.val().toLowerCase()
       if v[0] isnt "~" then v = "~#{v}"
       if @validateSource v
         _sources = _.clone @state.configs[@state.station].sources
         _sources.push v
         StationActions.setSources @state.station,_sources
-        @$input.val('')
-        @$input.blur()
+        $input.val('')
+        $input.blur()
       else
-        $('.sour-ctrl .join').addClass 'valid-false'
+        $('.menu.depth-1 .add').addClass 'valid-false'
 
   _remove: (e) ->
+    $t = $(e.target).closest('.room')
+    return if $t.hasClass 'disabled'
     e.stopPropagation()
     e.preventDefault()
     _station = $(e.target).attr "data-station"
     _sources = _.clone @state.configs[@state.station].sources
     _sources.splice _sources.indexOf(_station),1
     StationActions.setSources @state.station,_sources
+    $t.addClass 'disabled'
 
   render: ->
     parts = []
@@ -77,13 +79,24 @@ module.exports = recl
     #          (div {className:"audi"}, station.slice(1))
     #     )
 
-    # sources = unless @state.station and @state.configs[@state.station]
-    #     ""
-    #   else for source in @state.configs[@state.station].sources
-    #     (div {className:"station"},
-    #       (div {className:"path"}, source.slice(1))
-    #       (div {className:"remove",onClick:@_remove,"data-station":source},"×"),
-    #     )
+    if @state.station and @state.configs[@state.station]
+      sources = for source in @state.configs[@state.station].sources
+          (div {className:"room"}, [
+            source.slice(1)
+            (div {
+              className:"close"
+              onClick:@_remove
+              "data-station":source }, "✕")
+          ])
+      sources.push (input {
+          className:"action add"
+          placeholder:"+ Listen"
+          @onKeyUp
+        }, "")
+      sourcesSum = @state.configs[@state.station].sources.length
+    else
+      sources = ""
+      sourcesSum = 0
 
     _clas = clas
       open:(@props.open is true)
@@ -95,32 +108,24 @@ module.exports = recl
 
     (div {className:_clas, key:'station'}, [
       (div {className:"contents"}, [
-        (div {className:"close"}, "✕")
-        (h2 {}, [
-          (span {}, "Direct")
-          (label {className:"sum"}, 3)
-        ])
-        (div {}, [
-          (div {className:"name"}, "Galen")
-          (div {className:"planet"}, "~talsur-todres")
-        ])
-        (div {className:"action create"}, [
-          (label {}, "")
-          (span {}, "Message")
-        ])
+        (div {className:"close",onClick:@props.toggle}, "✕")
+        # (h2 {}, [
+        #   (span {}, "Direct")
+        #   (label {className:"sum"}, 3)
+        # ])
+        # (div {}, [
+        #   (div {className:"name"}, "Galen")
+        #   (div {className:"planet"}, "~talsur-todres")
+        # ])
+        # (div {className:"action create"}, [
+        #   (label {}, "")
+        #   (span {}, "Message")
+        # ])
         (h2 {}, [
           (span {}, "Stations")
-          (label {className:"sum"}, 4)
+          (label {className:"sum"}, sourcesSum)
         ])
-        (div {}, [
-          (div {className:"room"}, "/meta")
-          (div {className:"room"}, "/help")
-          (div {className:"room"}, "~talsur-todres/room")
-          (div {className:"action add"}, [
-            (label {}, "")
-            (span {}, "Listen")
-          ])
-        ])
+        (div {}, sources)
       ])
     ])
 
