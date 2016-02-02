@@ -52,12 +52,7 @@ StationStore = _.merge new EventEmitter,{
 
   getMember: (ship) -> {ship:ship}
 
-  loadMembers: (members) -> 
-    _members = {}
-    for station,list of members
-      for member,presence of list
-        _members[member] = {} if not _members[member]
-        _members[member][station] = presence
+  loadMembers: (members) -> _members = members
 
   getMembers: -> _members
 

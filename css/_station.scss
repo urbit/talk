@@ -18,20 +18,42 @@ input.action { @include placeholder {
 }}
 input.action:focus { @include placeholder { color: transparent; }}
 
-.room .close {
-  display: none;
-  margin: 0;
-  float: none;
-  margin-left: .6rem;
-  font-weight: 600;
-  font-size: .8rem;
-  color: $red;
-}
+.menu {
+  .name,
+  .planet {
+    display: inline-block;
+  }
 
-.room:hover .close {
-  display: inline;
-}
+  .name,
+  .planet,
+  .room {
+    font-size: .8rem;
+  }
 
-.room.disabled {
-  opacity: .6;
+  .room > div { 
+    display:inline; 
+    cursor:pointer;
+  }
+  .room > div.selected { font-weight: 500; }
+
+  .room .close {
+    display: none;
+    margin: 0;
+    float: none;
+    margin-left: .6rem;
+    font-weight: 600;
+    font-size: .8rem;
+    color: $red;
+  }
+
+  .room:hover .close { display: inline; }
+  .room.disabled { opacity: .6; }
+
+  .name { 
+    display: none; // for now
+    min-width: 33.333%; 
+    font-size: .9rem;
+  }
+  
+  .planet {  min-width: 66.667%;  }
 }

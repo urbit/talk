@@ -21,6 +21,7 @@ module.exports = recl
     fetching:MessageStore.getFetching()
     typing:StationStore.getTyping()
     listening:StationStore.getListening()
+    open:(if @state?.open then @state.open else null)
   }
   getInitialState: -> @stateFromStore()
   componentDidMount: ->
@@ -31,10 +32,8 @@ module.exports = recl
   componentWillUnmount: ->
     StationStore.removeChangeListener @_onChangeStore
   _onChangeStore: -> @setState @stateFromStore()
-
-  _toggleOpen: (e) ->
-    if $(e.target).closest('.sour-ctrl').length is 0
-      $("#station-container").toggleClass 'open'
+  componentWillReceiveProps: (nextProps) ->
+    if @props.open is true and nextProps.open is false then @setState {open:null}
 
   validateSource: (s) ->
     {sources} = @state.configs[@state.station]
@@ -54,6 +53,12 @@ module.exports = recl
         $input.blur()
       else
         $('.menu.depth-1 .add').addClass 'valid-false'
+
+  _openStation: (e) ->
+    $t = $(e.target)
+    @setState {open:$t.attr('data-station')}
+
+  _closeStation: -> @setState {open:null}
 
   _remove: (e) ->
     e.stopPropagation()
@@ -75,11 +80,39 @@ module.exports = recl
     #        for station, presence of stations
     #          (div {className:"audi"}, station.slice(1))
     #     )
+    # members list
+    if @state.station and @state.configs[@state.station]
+      members = for station,members of @state.members
+        _clas = clas
+          open:(@state.open is station)
+          closed:!(@state.open is station)
+          'col-md-4':true
+          'col-md-offset-6':true
+          menu:true
+          'depth-2':true
 
+        (div {className:_clas,"data-members":station}, [
+          (div {className:"contents",onClick:@_closeStation}, [
+            (div {className:"close"}, "✕")
+            (h2 {}, [
+              (span {}, "Members")
+              (label {className:"sum"}, _.keys(members).length)])
+            (for member,obj of members
+              (div {}, [
+                (div {className:"name"}, "")
+                (div {className:"planet"}, member)
+              ]))
+          ])
+        ])
+
+    # sources list
     if @state.station and @state.configs[@state.station]
       sources = for source in @state.configs[@state.station].sources
           (div {className:"room"}, [
-            source.slice(1)
+            (div {
+              className:(if @state.open is source then "selected" else "")
+              onClick:@_openStation
+              "data-station":source}, source.slice(1))
             (div {
               className:"close"
               onClick:@_remove
@@ -103,27 +136,30 @@ module.exports = recl
       menu:true
       'depth-1':true
 
-    (div {className:_clas, key:'station'}, [
-      (div {className:"contents"}, [
-        (div {className:"close",onClick:@props.toggle}, "✕")
-        # (h2 {}, [
-        #   (span {}, "Direct")
-        #   (label {className:"sum"}, 3)
-        # ])
-        # (div {}, [
-        #   (div {className:"name"}, "Galen")
-        #   (div {className:"planet"}, "~talsur-todres")
-        # ])
-        # (div {className:"action create"}, [
-        #   (label {}, "")
-        #   (span {}, "Message")
-        # ])
-        (h2 {}, [
-          (span {}, "Stations")
-          (label {className:"sum"}, sourcesSum)
+    (div {key:"station-container"}, [
+      (div {className:_clas, key:'station'}, [
+        (div {className:"contents"}, [
+          (div {className:"close",onClick:@props.toggle}, "✕")
+          # (h2 {}, [
+          #   (span {}, "Direct")
+          #   (label {className:"sum"}, 3)
+          # ])
+          # (div {}, [
+          #   (div {className:"name"}, "Galen")
+          #   (div {className:"planet"}, "~talsur-todres")
+          # ])
+          # (div {className:"action create"}, [
+          #   (label {}, "")
+          #   (span {}, "Message")
+          # ])
+          (h2 {}, [
+            (span {}, "Stations")
+            (label {className:"sum"}, sourcesSum)
+          ])
+          (div {}, sources)
         ])
-        (div {}, sources)
       ])
+      members
     ])
 
     # (div {id:"station",onClick:@_toggleOpen},
