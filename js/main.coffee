@@ -18,7 +18,7 @@ setInterval (->
 # setInterval checkScroll, 500
 
 
-StationComponent    = React.createFactory require './components/StationComponent.coffee'
+StationComponent    = require './components/StationComponent.coffee'
 MessagesComponent   = React.createFactory require './components/MessagesComponent.coffee'
 WritingComponent    = React.createFactory require './components/WritingComponent.coffee'
 
@@ -34,14 +34,10 @@ TreeActions.registerComponent "talk", React.createClass
     StationActions.listen()
     StationActions.listenStation window.util.mainStation()
 
-    TreeActions.setNav 
-      title:"Talk"
-      dpad:false
-      sibs:false
-      subnav:StationComponent
-
   render: ->
     (div {key:"talk-container"}, [
       (div {key:"grams-container"}, (MessagesComponent {key:'grams'}, ''))
       (div {key:'writing-container'}, (WritingComponent {key:'writing'}, ''))
     ])
+    
+TreeActions.registerComponent "talk-station", StationComponent
