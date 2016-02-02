@@ -1,0 +1,43 @@
+// input
+
+.input {
+  border-bottom: 3px solid #000;
+  display: inline-block;
+  line-height: 2rem;
+  font-size: 1rem;
+  padding: 0 .2rem;
+  min-width: 1rem;
+  min-height: 1rem;
+  outline: none;
+}
+
+.audience,
+.message { margin-left: 2rem; }
+
+.audience {
+  margin-bottom: 1rem;
+}
+
+.audience .input {
+  border-color: $gray-light;
+  font-family: 'scp';
+}
+
+.message { display: inline-block; }
+
+.message .input {
+  border-color: $gray-dark;
+  font-family: 'bau';
+}
+
+.writing { margin-top: 2rem; }
+
+.length {
+  display: inline-block;
+  margin-left: 2rem;
+  line-height: 2rem;
+  font-family: 'bau';
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: 1px;
+}

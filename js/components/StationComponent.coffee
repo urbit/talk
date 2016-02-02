@@ -56,15 +56,12 @@ module.exports = recl
         $('.menu.depth-1 .add').addClass 'valid-false'
 
   _remove: (e) ->
-    $t = $(e.target).closest('.room')
-    return if $t.hasClass 'disabled'
     e.stopPropagation()
     e.preventDefault()
     _station = $(e.target).attr "data-station"
     _sources = _.clone @state.configs[@state.station].sources
     _sources.splice _sources.indexOf(_station),1
     StationActions.setSources @state.station,_sources
-    $t.addClass 'disabled'
 
   render: ->
     parts = []

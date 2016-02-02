@@ -1,3 +1,4 @@
+@import "../bootstrap/scss/_custom.scss";
 
 // grams
 
@@ -44,9 +45,14 @@ div.meta {
     padding-top: 0;
   }
 
-  h3 { margin-left: 2rem; }
+  h3 { 
+    margin-left: 2rem; 
+    line-height: 1rem;
+  }
   .time { padding-right: 2rem; }
 }
+
+div.gram.first { margin-top: 1rem; }
 
 div.gram.same div.meta { display: none; }
 
@@ -64,44 +70,28 @@ div.gram.same:hover div.meta {
   div.meta > label { margin-right: 9px; }
 }
 
-// input
-
-.input {
-  border-bottom: 3px solid #000;
-  display: inline-block;
-  line-height: 2rem;
-  font-size: 1rem;
-  padding: 0 .2rem;
-  min-width: 1rem;
-  min-height: 1rem;
-  outline: none;
+div.gram label[data-glyph=">"],
+div.gram label[data-glyph="="],
+div.gram label[data-glyph="+"],
+div.gram label[data-glyph="-"],
+div.gram label[data-glyph="}"] {
+  background-color: $red;
 }
 
-.audience,
-.message { margin-left: 2rem; }
-
-.audience {
-  margin-bottom: 2rem;
+div.gram label[data-glyph=")"],
+div.gram label[data-glyph=","],
+div.gram label[data-glyph="."],
+div.gram label[data-glyph='"'],
+div.gram label[data-glyph="'"] {
+  background-color: $green;
 }
 
-.audience .input {
-  border-color: $gray-light;
-  font-family: 'scp';
-}
-
-.message { display: inline-block; }
-
-.message .input {
-  border-color: $gray-dark;
-  font-family: 'bau';
-}
-
-.length {
-  display: inline-block;
-  margin-left: 2rem;
-  line-height: 2rem;
-  font-family: 'bau';
-  font-size: .7rem;
-  font-weight: 500;
-  letter-spacing: 1px;
+div.gram label[data-glyph="*"],
+div.gram label[data-glyph="`"],
+div.gram label[data-glyph="^"],
+div.gram label[data-glyph="$"],
+div.gram label[data-glyph="%"],
+div.gram label[data-glyph="&"],
+div.gram label[data-glyph="@"] {
+  background-color: $blue;
 }

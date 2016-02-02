@@ -58,10 +58,9 @@ Audience = recl
   onKeyDown: (e) ->
     if e.keyCode is 13 
       e.preventDefault()
-      setTimeout () ->
-          $('#writing').focus()
-        ,0
-      return false
+      if @props.validate()
+        setTimeout (-> $('#writing').focus()),0
+        return false
   render: ->
     div {className:'audience',id:'audience',key:'audience'}, (div {
           className:"input valid-#{@props.valid}"
@@ -120,7 +119,7 @@ module.exports = recl
 
   sendMessage: ->
     if @_validateAudi() is false
-      $('#audience').focus()
+      setTimeout (-> $('#audience .input').focus()), 0
       return
     if @state.audi.length is 0 and $('#audience').text().trim().length > 0
       audi = if @_setAudi() then @_setAudi() else @state.ludi
@@ -137,14 +136,6 @@ module.exports = recl
   onKeyUp: (e) ->
     if not window.urb.util.isURL @$message.text()
       @setState lengthy: (@$message.text().length > 62)
-    # r = window.getSelection().getRangeAt(0).cloneRange()
-    # @$message.text @$message.text()
-    # setTimeout => 
-    #     s = window.getSelection()
-    #     s.removeAllRanges()
-    #     s.addRange r
-    #     console.log r
-    #   ,0
   
   onKeyDown: (e) ->
     if e.keyCode is 13
@@ -195,7 +186,7 @@ module.exports = recl
       _.all (ship.match /[a-z]{3}/g), (a)-> -1 isnt PO.indexOf a
 
   _validateAudi: ->
-    v = $('#audience').text()
+    v = $('#audience .input').text()
     v = v.trim()
     if v.length is 0 
       return true
@@ -207,7 +198,7 @@ module.exports = recl
     valid = @_validateAudi()
     StationActions.setValidAudience valid
     if valid is true
-      stan = $('#audience').text() || window.util.mainStationPath window.urb.user
+      stan = $('#audience .input').text() || window.util.mainStationPath window.urb.user
       stan = (stan.split /\ +/).map (v)->
         if v[0] is "~" then v else "~"+v
       StationActions.setAudience stan
@@ -262,7 +253,11 @@ module.exports = recl
       audi[k] = v.slice(1)
 
     div {className:'writing',key:'writing'}, [
-      (React.createElement Audience, {audi,valid:@state.valid, onBlur:@_setAudi})
+      (React.createElement Audience, {
+        audi
+        valid:@state.valid
+        validate:@_validateAudi
+        onBlur:@_setAudi })
       (div {className:'message',id:'message',key:'message'}, 
         (div {
           className:'input'
