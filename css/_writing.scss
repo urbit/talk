@@ -12,7 +12,7 @@
 }
 
 .audience,
-.message { margin-left: 2rem; }
+.message { margin-left: $grid-gutter-width; }
 
 .audience {
   margin-bottom: 1rem;
