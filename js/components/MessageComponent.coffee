@@ -19,7 +19,7 @@ module.exports = recl
     "~#{h}.#{m}.#{s}"
 
   _handleAudi: (e) ->
-    audi = _.map $(e.target).closest('.audi').find('div'), (div) -> return "~"+$(div).text()
+    audi = _.map $(e.target).closest('.path').find('div'), (div) -> return "~"+$(div).text()
     @props._handleAudi audi
 
   _handlePm: (e) ->

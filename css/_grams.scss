@@ -74,9 +74,7 @@ div.gram.same:hover div.meta {
 
 .gram pre { background-color: transparent; }
 
-div.gram label {
-  background-color: $blue;
-}
+div.gram label { background-color: $blue; }
 
 // div.gram label[data-glyph=">"],
 // div.gram label[data-glyph="="],
@@ -97,3 +95,6 @@ div.gram label {
 // div.gram label[data-glyph="@"] {
 //   background-color: $blue;
 // }
+
+.author,
+.path { cursor: pointer; }
