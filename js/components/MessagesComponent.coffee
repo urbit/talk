@@ -15,7 +15,7 @@ MESSAGE_HEIGHT_SAME  = 36     # XX measure 96.75
 module.exports = recl
   displayName: "Messages"
   pageSize: 50
-  paddingTop: 400
+  paddingTop: 100
 
   stateFromStore: -> {
     messages:MessageStore.getAll()
@@ -78,15 +78,6 @@ module.exports = recl
     $(window).on 'focus', @_focus
     window.util.scrollToBottom()
 
-  componentWillUpdate: ->
-    $window = $(window)
-    if ($('.writing').is -> 
-         $(@).offset().top < $window.scrollTop() + $window.height()
-        )
-      @anchorKey = Number.MAX_VALUE
-    else
-      @anchorKey = $('.message').first().attr('data-index') ? 0
-    
   componentDidUpdate: (_props, _state)->
     $window = $ window
     scrollTop = $window.scrollTop()
@@ -94,13 +85,13 @@ module.exports = recl
     lastSaid = null
     for message in @state.messages 
       nowSaid = [message.ship,message.thought.audience]
-      if not old[message.key] and message.key < @anchorKey
+      if not old[message.key]
         sameAs = _.isEqual lastSaid, nowSaid
         scrollTop +=  if sameAs 
                         MESSAGE_HEIGHT_SAME 
                       else
                         MESSAGE_HEIGHT_FIRST
-      prev = message
+      lastSaid = nowSaid
     $window.scrollTop scrollTop
 
     if @focused is false and @last isnt @lastSeen
