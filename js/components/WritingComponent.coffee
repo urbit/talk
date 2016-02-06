@@ -59,7 +59,7 @@ Audience = recl
     if e.keyCode is 13 
       e.preventDefault()
       if @props.validate()
-        setTimeout (-> $('#writing').focus()),0
+        setTimeout (-> $('.writing').focus()),0
         return false
   render: ->
     div {className:'audience',id:'audience',key:'audience'}, (div {

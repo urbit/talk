@@ -9,12 +9,13 @@ StationActions  = require '../actions/StationActions.coffee'
 StationStore    = require '../stores/StationStore.coffee'
 Message         = require './MessageComponent.coffee'
 
-MESSAGE_HEIGHT = 36 # XX measure
+MESSAGE_HEIGHT_FIRST = 96.75
+MESSAGE_HEIGHT_SAME  = 36     # XX measure 96.75
 
 module.exports = recl
   displayName: "Messages"
   pageSize: 50
-  paddingTop: 100
+  paddingTop: 400
 
   stateFromStore: -> {
     messages:MessageStore.getAll()
@@ -79,7 +80,7 @@ module.exports = recl
 
   componentWillUpdate: ->
     $window = $(window)
-    if ($('#writing').is -> 
+    if ($('.writing').is -> 
          $(@).offset().top < $window.scrollTop() + $window.height()
         )
       @anchorKey = Number.MAX_VALUE
@@ -90,8 +91,16 @@ module.exports = recl
     $window = $ window
     scrollTop = $window.scrollTop()
     old = {}; old[key] = true for {key} in _state.messages
-    for {key} in @state.messages when not old[key] and key < @anchorKey
-      scrollTop += MESSAGE_HEIGHT
+    lastSaid = null
+    for message in @state.messages 
+      nowSaid = [message.ship,message.thought.audience]
+      if not old[message.key] and message.key < @anchorKey
+        sameAs = _.isEqual lastSaid, nowSaid
+        scrollTop +=  if sameAs 
+                        MESSAGE_HEIGHT_SAME 
+                      else
+                        MESSAGE_HEIGHT_FIRST
+      prev = message
     $window.scrollTop scrollTop
 
     if @focused is false and @last isnt @lastSeen
@@ -129,11 +138,14 @@ module.exports = recl
     lastIndex = if @lastSeen then messages.indexOf(@lastSeen)+1 else null
     lastSaid = null
     
+    messageHeights = []
     
     _messages = messages.map (message,index) =>
       nowSaid = [message.ship,message.thought.audience]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
+
+      messageHeights.push (if sameAs then MESSAGE_HEIGHT_SAME else MESSAGE_HEIGHT_FIRST)
 
       {speech} = message.thought.statement
       React.createElement Message, (_.extend {}, message, {
@@ -149,7 +161,7 @@ module.exports = recl
       React.createElement Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight
-          elementHeight: MESSAGE_HEIGHT
+          elementHeight: messageHeights
           key:"messages-infinite"
         }, _messages
     )

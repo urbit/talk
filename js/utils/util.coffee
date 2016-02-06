@@ -66,22 +66,17 @@ _.merge window.util,
       window.talk.MessagePersistence.sendMessage _message,send
     send()
 
-  scrollToBottom: -> $(window).scrollTop($("#container").height())
+  scrollToBottom: -> $(window).scrollTop($(".container").height())
 
   getScroll: ->
-    @writingPosition = $('#container').outerHeight(true)+$('#container').offset().top-$(window).height()
+    @writingPosition = $('.container').outerHeight(true)+$('.container').offset().top-$(window).height()
 
   setScroll: ->
     window.util.getScroll()
-    $(window).scrollTop($("#container").height())
+    $(window).scrollTop($(".container").height())
 
   isScrolling: ->
     if not window.util.writingPosition
       window.util.getScroll()
     return ($(window).scrollTop()+$('.writing').outerHeight() < window.util.writingPosition)
 
-  checkScroll: ->
-    if window.util.isScrolling()
-      $('body').addClass 'scrolling'
-    else
-      $('body').removeClass 'scrolling'

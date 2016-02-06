@@ -6,8 +6,6 @@ recl = React.createClass
 
 Member          = require './MemberComponent.coffee'
 
-MESSAGE_HEIGHT = 48 # XX measure
-
 module.exports = recl
   displayName: "Message"
   
