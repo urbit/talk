@@ -132,7 +132,9 @@ module.exports = recl
     messageHeights = []
     
     _messages = messages.map (message,index) =>
-      nowSaid = [message.ship,message.thought.audience]
+      nowSaid = [message.ship,_.keys(message.thought.audience)]
+      console.log lastSaid
+      console.log nowSaid
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
 

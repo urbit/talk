@@ -76,6 +76,10 @@ div.gram.same:hover div.meta {
 
 div.gram label { background-color: $blue; }
 
+div.gram.say .speech { font-style: italic; }
+
+div.gram.pending { opacity: .5; }
+
 // div.gram label[data-glyph=">"],
 // div.gram label[data-glyph="="],
 // div.gram label[data-glyph="+"],
