@@ -11,7 +11,7 @@ _.merge window.util,
         return "court"
       when 6
         return "floor"
-      when 13
+      else
         return "porch"
 
   clipAudi: (audi) ->
