@@ -77,22 +77,28 @@ module.exports = recl
     $(window).on 'blur', @_blur
     $(window).on 'focus', @_focus
     window.util.scrollToBottom()
-
-  componentDidUpdate: (_props, _state)->
+    
+  componentWillUpdate: (props, state)->
     $window = $ window
     scrollTop = $window.scrollTop()
-    old = {}; old[key] = true for {key} in _state.messages
+    old = {}; old[key] = true for {key} in @state.messages
     lastSaid = null
-    for message in @state.messages 
-      nowSaid = [message.ship,message.thought.audience]
-      if not old[message.key]
-        sameAs = _.isEqual lastSaid, nowSaid
-        scrollTop +=  if sameAs 
-                        MESSAGE_HEIGHT_SAME 
-                      else
-                        MESSAGE_HEIGHT_FIRST
-      lastSaid = nowSaid
-    $window.scrollTop scrollTop
+    if window.innerHeight+scrollTop > $('.writing').offset().top
+      for message in state.messages 
+        nowSaid = [message.ship,message.thought.audience]
+        if not old[message.key]
+          sameAs = _.isEqual lastSaid, nowSaid
+          scrollTop +=  if sameAs 
+                          MESSAGE_HEIGHT_SAME 
+                        else
+                          MESSAGE_HEIGHT_FIRST
+        lastSaid = nowSaid
+      @setOffset = scrollTop
+
+  componentDidUpdate: (_props, _state)->
+    if @setOffset
+      $(window).scrollTop @setOffset
+      @setOffset = null      
 
     if @focused is false and @last isnt @lastSeen
       _messages = @sortedMessages @state.messages
@@ -132,7 +138,7 @@ module.exports = recl
     messageHeights = []
     
     _messages = messages.map (message,index) =>
-      nowSaid = [message.ship,message.thought.audience]
+      nowSaid = [message.ship,_.keys(message.thought.audience)]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
 

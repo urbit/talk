@@ -96,7 +96,9 @@ div.gram.same:hover div.meta {
 
 .gram pre { background-color: transparent; }
 
-div.gram label { background-color: $blue; }
+div.gram label { background-color: $blue; } 
+div.gram.say .speech { font-style: italic; }
+div.gram.pending .speech { color: $gray-light; }
 
 // div.gram label[data-glyph=">"],
 // div.gram label[data-glyph="="],
