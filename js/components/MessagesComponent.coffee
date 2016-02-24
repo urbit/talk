@@ -83,16 +83,15 @@ module.exports = recl
     scrollTop = $window.scrollTop()
     old = {}; old[key] = true for {key} in @state.messages
     lastSaid = null
-    if window.innerHeight+scrollTop > $('.writing').offset().top
-      for message in state.messages 
-        nowSaid = [message.ship,message.thought.audience]
-        if not old[message.key]
-          sameAs = _.isEqual lastSaid, nowSaid
-          scrollTop +=  if sameAs 
-                          MESSAGE_HEIGHT_SAME 
-                        else
-                          MESSAGE_HEIGHT_FIRST
-        lastSaid = nowSaid
+    for message in state.messages 
+      nowSaid = [message.ship,message.thought.audience]
+      if not old[message.key]
+        sameAs = _.isEqual lastSaid, nowSaid
+        scrollTop +=  if sameAs 
+                        MESSAGE_HEIGHT_SAME 
+                      else
+                        MESSAGE_HEIGHT_FIRST
+      lastSaid = nowSaid
       @setOffset = scrollTop
 
   componentDidUpdate: (_props, _state)->
