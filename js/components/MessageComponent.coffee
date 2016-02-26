@@ -35,17 +35,23 @@ module.exports = recl
     when (con = speech.url)
       (a {href:con.txt,target:"_blank",key:"speech"}, con.txt)
     when (con = speech.mor) then con.map @renderSpeech
+    when (con = speech.fat)
+      [ (@renderSpeech con.taf)
+        (div {className:"fat"}, @renderTorso con.tor)
+      ]
     else "Unknown speech type:" + (" %"+x for x of speech).join ''
 
+  renderTorso: ({text,tank,name}) -> switch  # one of
+    when text? then text
+    when tank? then pre {}, tank.join("\n")
+    when name? then [name.nom, ": ", @renderTorso name.mon]
+    else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
+  
   render: ->
     # pendingClass = clas pending: @props.pending isnt "received"
     {thought} = @props
     delivery = _.uniq _.pluck thought.audience, "delivery"
     speech = thought.statement.speech
-    attachments = []
-    while speech.fat?
-      attachments.push pre {}, speech.fat.tor.tank.join("\n")
-      speech = speech.fat.taf  # XX
     if !speech? then return;
     
     name = if @props.name then @props.name else ""
@@ -74,6 +80,4 @@ module.exports = recl
         )
         (div {className:"speech",key:"speech"}, 
           @renderSpeech speech
-          if attachments.length
-            div {className:"fat",key:"fat"}, attachments
     ))
