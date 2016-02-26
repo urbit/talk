@@ -28,25 +28,32 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
-  renderSpeech: (speech)-> switch
-    when (con = speech.lin) or (con = speech.app) or
-         (con = speech.exp) or (con = speech.tax)
+  renderSpeech: ({lin,app,exp,tax, url, mor,fat})-> switch # one of
+    when (con = lin or app or exp or tax)
       con.txt
-    when (con = speech.url)
-      (a {href:con.txt,target:"_blank",key:"speech"}, con.txt)
-    when (con = speech.mor) then con.map @renderSpeech
-    when (con = speech.fat)
-      [ (@renderSpeech con.taf)
-        (div {className:"fat"}, @renderTorso con.tor)
+    when url
+      (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
+    when mor then mor.map @renderSpeech
+    when fat
+      [ (@renderSpeech fat.taf)
+        (div {className:"fat"}, @renderTorso fat.tor)
       ]
-    else "Unknown speech type:" + (" %"+x for x of speech).join ''
+    else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
   renderTorso: ({text,tank,name}) -> switch  # one of
     when text? then text
     when tank? then pre {}, tank.join("\n")
     when name? then [name.nom, ": ", @renderTorso name.mon]
     else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
-  
+
+  classesInSpeech: ({url,exp, app,lin, mor,fat})-> switch # at most one of
+    when url then "url"
+    when exp then "exp"
+    when app then "say"
+    when lin then {say: lin.say is false}
+    when mor then mor?.map @classesInSpeech
+    when fat then @classesInSpeech fat.taf
+
   render: ->
     # pendingClass = clas pending: @props.pending isnt "received"
     {thought} = @props
@@ -64,10 +71,8 @@ module.exports = recl
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
       (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
-      {say: speech.lin?.say is false, url: speech.url, 'new': @props.unseen},
-      switch
-        when speech.app? then "say"
-        when speech.exp? then "exp"
+      {'new': @props.unseen}
+      @classesInSpeech speech
         
     (div {className, 'data-index':@props.index, key:"message"},
         (div {className:"meta",key:"meta"},
