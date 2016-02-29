@@ -33,7 +33,8 @@ module.exports = ({StationActions})->
       return
     console.log '/'
     console.log res.data
-    if res.data.house
+    {house} = res.data # one of
+    if house
       StationActions.loadStations res.data.house
 
   listenStation: (station) -> window.urb.bind "/avx/#{station}", (err,res) ->
@@ -43,13 +44,15 @@ module.exports = ({StationActions})->
       return
     console.log('/avx/')
     console.log(res.data)
-    if res.data.ok is true
-      StationActions.listeningStation station
-    if res.data.group
-      res.data.group.global[window.util.mainStationPath(window.urb.user)] =
-        res.data.group.local
-      StationActions.loadMembers res.data.group.global
-    if res.data.cabal?.loc
-      StationActions.loadConfig station,res.data.cabal.loc
-    if res.data.glyph
-      StationActions.loadGlyphs res.data.glyph
+    {ok,group,cabal,glyph} = res.data # one of
+    switch
+      when ok
+        StationActions.listeningStation station
+      when group
+        group.global[window.util.mainStationPath(window.urb.user)] =
+          group.local
+        StationActions.loadMembers group.global
+      when cabal?.loc
+        StationActions.loadConfig station,cabal.loc
+      when glyph
+        StationActions.loadGlyphs glyph
