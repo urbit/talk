@@ -85,6 +85,7 @@ module.exports = recl
       config:StationStore.getConfigs()
       members:StationStore.getMembers()
       typing:StationStore.getTyping()
+      station:StationStore.getStation()
       valid:StationStore.getValidAudience()
     s.audi = _.without s.audi, window.util.mainStationPath window.urb.user
     s.ludi = _.without s.ludi, window.util.mainStationPath window.urb.user
@@ -107,14 +108,9 @@ module.exports = recl
     @cursorAtEnd
 
   addCC: (audi) ->
-    listening = @state.config[window.util.mainStation(window.urb.user)]?.sources ? []
-    cc = false
-    for s in audi
-      if listening.indexOf(s) is -1
-        cc = true
-    if listening.length is 0 then cc = true
-    if cc is true
-      audi.push window.util.mainStationPath(window.urb.user)
+    listening = @state.config[@props.station]?.sources ? []
+    if _.isEmpty _.intersection audi, listening
+      audi.push "~#{window.urb.user}/#{@props.station}"
     audi
 
   sendMessage: ->
