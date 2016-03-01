@@ -60,9 +60,11 @@ module.exports = recl
 
   sortedMessages: (messages) ->
     station = @state.station
-    _.sortBy messages, (message) -> 
+    _.sortBy messages, (message) => 
           message.pending = message.thought.audience[station]
-          message.key
+          if @props.chrono is "reverse"
+            -message.key
+          else message.key
           #message.thought.statement.date
 
   componentWillMount: -> Infinite = require 'react-infinite'

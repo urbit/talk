@@ -41,11 +41,11 @@ TreeActions.registerComponent "talk", React.createClass
     station =  @getStation()
     (div {key:"talk-container"}, [
       (div {key:"grams-container"},
-        (MessagesComponent _.create(@props,{station,key:'grams'}), '')
+        (MessagesComponent _.merge({},@props,{station,key:'grams'}), '')
       )
       unless @props.readOnly?
         (div {key:'writing-container'},
-          (WritingComponent _.create(@props,{station,key:'writing'}), '')
+          (WritingComponent _.merge({},@props,{station,key:'writing'}), '')
         )
     ])
     
