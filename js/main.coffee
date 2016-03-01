@@ -43,9 +43,10 @@ TreeActions.registerComponent "talk", React.createClass
       (div {key:"grams-container"},
         (MessagesComponent _.create(@props,{station,key:'grams'}), '')
       )
-      (div {key:'writing-container'},
-        (WritingComponent _.create(@props,{station,key:'writing'}), '')
-      )
+      unless @props.readOnly?
+        (div {key:'writing-container'},
+          (WritingComponent _.create(@props,{station,key:'writing'}), '')
+        )
     ])
     
 TreeActions.registerComponent "talk-station", StationComponent
