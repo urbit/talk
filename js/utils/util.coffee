@@ -69,7 +69,9 @@ _.merge window.util,
   scrollToBottom: -> $(window).scrollTop($(".container").height())
 
   getScroll: ->
-    @writingPosition = $('.container').outerHeight(true)+$('.container').offset().top-$(window).height()
+    @writingPosition = $('.container').outerHeight(true) +
+                       $('.container').offset().top -
+                       $(window).height()
 
   setScroll: ->
     window.util.getScroll()
@@ -78,5 +80,6 @@ _.merge window.util,
   isScrolling: ->
     if not window.util.writingPosition
       window.util.getScroll()
-    return ($(window).scrollTop()+$('.writing').outerHeight() < window.util.writingPosition)
+    return ($(window).scrollTop()+$('.writing').outerHeight() <
+            window.util.writingPosition)
 

@@ -2,7 +2,6 @@ so = {}
 so.ls = $(window).scrollTop()
 so.cs = $(window).scrollTop()
 so.w = null
-so.$d = $('#nav > div')
 setSo = -> 
   so.$n = $('#station-container')
   so.w = $(window).width()
