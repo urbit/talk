@@ -22,7 +22,7 @@ module.exports = recl
     last:MessageStore.getLast()
     fetching:MessageStore.getFetching()
     listening:MessageStore.getListening()
-    station:window.util.mainStation()
+    station:StationStore.getStation()
     stations:StationStore.getStations()
     configs:StationStore.getConfigs()
     typing:MessageStore.getTyping()

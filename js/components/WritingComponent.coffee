@@ -107,7 +107,7 @@ module.exports = recl
     @cursorAtEnd
 
   addCC: (audi) ->
-    listening = @state.config[window.util.mainStation(window.urb.user)].sources
+    listening = @state.config[window.util.mainStation(window.urb.user)]?.sources ? []
     cc = false
     for s in audi
       if listening.indexOf(s) is -1

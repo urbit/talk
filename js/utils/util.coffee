@@ -1,8 +1,14 @@
 if not window.util then window.util = {}
 _.merge window.util,
+
+  defaultStation: -> 
+    if document.location.search
+      document.location.search.replace /^\?/,''
+    else window.util.mainStation()
+  
   mainStations: ["court","floor","porch"]
   
-  mainStationPath: (user) -> "~#{user}/#{window.util.mainStation(user)}"
+  mainStationPath: (user) -> "~#{user}/#{window.util.mainStation user}"
 
   mainStation: (user) ->
     if not user then user = window.urb.user

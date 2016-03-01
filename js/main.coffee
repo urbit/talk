@@ -26,18 +26,26 @@ WritingComponent    = React.createFactory require './components/WritingComponent
 
 TreeActions.registerComponent "talk", React.createClass
   displayName:"talk"
-
+  getStation: -> @props.station or window.util.defaultStation()
+  
   componentWillMount: -> 
     require './utils/util.coffee'
     require './utils/move.coffee'
 
+    station = @getStation()
     StationActions.listen()
-    StationActions.listenStation window.util.mainStation()
+    StationActions.listenStation station
+    StationActions.switchStation station
 
   render: ->
+    station =  @getStation()
     (div {key:"talk-container"}, [
-      (div {key:"grams-container"}, (MessagesComponent {key:'grams'}, ''))
-      (div {key:'writing-container'}, (WritingComponent {key:'writing'}, ''))
+      (div {key:"grams-container"},
+        (MessagesComponent _.create(@props,{station,key:'grams'}), '')
+      )
+      (div {key:'writing-container'},
+        (WritingComponent _.create(@props,{station,key:'writing'}), '')
+      )
     ])
     
 TreeActions.registerComponent "talk-station", StationComponent
