@@ -2,19 +2,16 @@
 
 // grams
 
-div.meta {
-  display: inline-block;
-}
-
-div.grams {
+.grams {
   list-style-type: none;
   padding: 0;
   margin-top: -$grid-gutter-width;
+
+  .meta { display: inline-block; }
 }
 
-div.meta {
+.grams .meta {
   label {
-    background-color: $gray-light;
     margin-right: $grid-gutter-width/2;
     height: $grid-gutter-width/2;
     width: $grid-gutter-width/2;
@@ -70,7 +67,12 @@ div.gram.same:hover div.meta {
 .exp { 
   font-family: 'scp';
   font-size: .9rem;
-  max-height: 2rem;
+
+  .speech {
+    white-space: nowrap;
+    max-width: 100%;
+    overflow-x: scroll;
+  }
 
   .speech > span {
     color: #fff;
@@ -91,6 +93,33 @@ div.gram.same:hover div.meta {
       overflow: scroll;
       background-color: #000;
       color: #fff;
+  }
+}
+
+.comment { 
+  // .speech {
+  //   max-height: 2rem;
+  //   overflow: hidden;
+  //   transition: max-height 1s;
+  // }
+
+  // &:hover .speech {
+  //   max-height: 90rem;
+  //   transition: max-height 1s;
+  // }
+
+  .speech a.btn {
+    background-color: transparent;
+    color: #B1B7BD;
+    font-size: .9rem;
+    border: 0;
+    border-bottom: 3px solid #b1b7bd;
+    text-transform: none;
+    text-decoration: none;
+    padding: 0;
+    line-height: 1rem;
+    margin: 1rem 0 2rem 0;
+    letter-spacing: 0;
   }
 }
 
