@@ -35,15 +35,16 @@ module.exports = recl
       (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
     when mor then mor.map @renderSpeech
     when fat
-      [ (@renderSpeech fat.taf)
+      (div {},
+        (@renderSpeech fat.taf)
         (div {className:"fat"}, @renderTorso fat.tor)
-      ]
+      )
     else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
   renderTorso: ({text,tank,name}) -> switch  # one of
     when text? then text
     when tank? then pre {}, tank.join("\n")
-    when name? then [name.nom, ": ", @renderTorso name.mon]
+    when name? then (div {}, name.nom, ": ", @renderTorso name.mon)
     else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
 
   classesInSpeech: ({url,exp, app,lin, mor,fat})-> switch # at most one of
@@ -63,7 +64,7 @@ module.exports = recl
     
     name = if @props.name then @props.name else ""
     aude = _.keys thought.audience
-    audi = window.util.clipAudi(aude).map (_audi) -> (div {}, _audi.slice(1))
+    audi = window.util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi.slice(1))
 
     mainStation = window.util.mainStationPath(window.urb.user)
     type = if mainStation in aude then 'private' else 'public'

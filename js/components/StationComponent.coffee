@@ -91,7 +91,7 @@ module.exports = recl
           menu:true
           'depth-2':true
 
-        (div {className:_clas,"data-members":station},
+        (div {className:_clas,"data-members":station,key:station},
           (div {className:"contents",onClick:@_closeStation},
             (div {className:"close"}, "✕")
             (h2 {},
@@ -99,8 +99,8 @@ module.exports = recl
               (label {className:"sum"}
               _.keys(members).length)
             )
-            (for member,key of members
-              (div {key},
+            (for member of members
+              (div {key:member},
                 (div {className:"name"}, "")
                 (div {className:"planet"}, member)
             ))
@@ -110,7 +110,7 @@ module.exports = recl
     # sources list
     if @state.station and @state.configs[@state.station]
       sources = for source in @state.configs[@state.station].sources
-          (div {className:"room"},
+          (div {key:source,className:"room"},
             (div {
               className:(if @state.open is source then "selected" else "")
               onClick:@_openStation
@@ -121,6 +121,7 @@ module.exports = recl
               "data-station":source }, "✕")
           )
       sources.push (input {
+          key:"placeholder"
           className:"action add"
           placeholder:"+ Listen"
           @onKeyUp
