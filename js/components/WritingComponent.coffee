@@ -250,7 +250,7 @@ module.exports = recl
     for k,v of audi
       audi[k] = v.slice(1)
 
-    div {className:'writing',key:'writing'}, [
+    div {className:'writing',key:'writing'},
       (React.createElement Audience, {
         audi
         valid:@state.valid
@@ -266,4 +266,3 @@ module.exports = recl
         })
       )
       (div {className:'length',key:'length'}, "#{@state.length}/64 (#{Math.ceil @state.length / 64})")
-    ]

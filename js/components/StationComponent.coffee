@@ -91,24 +91,26 @@ module.exports = recl
           menu:true
           'depth-2':true
 
-        (div {className:_clas,"data-members":station}, [
-          (div {className:"contents",onClick:@_closeStation}, [
+        (div {className:_clas,"data-members":station},
+          (div {className:"contents",onClick:@_closeStation},
             (div {className:"close"}, "✕")
-            (h2 {}, [
+            (h2 {},
               (span {}, "Members")
-              (label {className:"sum"}, _.keys(members).length)])
-            (for member,obj of members
-              (div {}, [
+              (label {className:"sum"}
+              _.keys(members).length)
+            )
+            (for member,key of members
+              (div {key},
                 (div {className:"name"}, "")
                 (div {className:"planet"}, member)
-              ]))
-          ])
-        ])
+            ))
+          )
+        )
 
     # sources list
     if @state.station and @state.configs[@state.station]
       sources = for source in @state.configs[@state.station].sources
-          (div {className:"room"}, [
+          (div {className:"room"},
             (div {
               className:(if @state.open is source then "selected" else "")
               onClick:@_openStation
@@ -117,7 +119,7 @@ module.exports = recl
               className:"close"
               onClick:@_remove
               "data-station":source }, "✕")
-          ])
+          )
       sources.push (input {
           className:"action add"
           placeholder:"+ Listen"
@@ -136,31 +138,31 @@ module.exports = recl
       menu:true
       'depth-1':true
 
-    (div {key:"station-container"}, [
-      (div {className:_clas, key:'station'}, [
-        (div {className:"contents"}, [
+    (div {key:"station-container"},
+      (div {className:_clas, key:'station'},
+        (div {className:"contents"},
           (div {className:"close",onClick:@props.toggle}, "✕")
-          # (h2 {}, [
+          # (h2 {},
           #   (span {}, "Direct")
           #   (label {className:"sum"}, 3)
-          # ])
-          # (div {}, [
+          # )
+          # (div {},
           #   (div {className:"name"}, "Galen")
           #   (div {className:"planet"}, "~talsur-todres")
-          # ])
-          # (div {className:"action create"}, [
+          # )
+          # (div {className:"action create"},
           #   (label {}, "")
           #   (span {}, "Message")
-          # ])
-          (h2 {}, [
+          # )
+          (h2 {}, 
             (span {}, "Stations")
             (label {className:"sum"}, sourcesSum)
-          ])
+          )
           (div {}, sources)
-        ])
-      ])
+        )
+      )
       members
-    ])
+    )
 
     # (div {id:"station",onClick:@_toggleOpen},
     #   (div {id:"head"}, 
