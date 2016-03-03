@@ -52,6 +52,7 @@ nydhusrelrudneshesfetdesretdunlernyrsebhulryllud
 remlysfynwerrycsugnysnyllyndyndemluxfedsedbecmun
 lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes
 '''
+textToHTML = (txt)-> __html: $('<div>').text(txt).html()
 
 Audience = recl
   displayName: "Audience"
@@ -68,7 +69,8 @@ Audience = recl
           contentEditable:true
           @onKeyDown
           onBlur:@props.onBlur
-        }, @props.audi.join(" "))
+          dangerouslySetInnerHTML: textToHTML @props.audi.join(" ")
+        })
 
 module.exports = recl
   displayName: "Writing"
@@ -260,7 +262,8 @@ module.exports = recl
           contentEditable:true
           onPaste: @onInput
           @onInput, @onFocus, @onBlur, @onKeyDown, @onKeyUp
-        }, "")
+          dangerouslySetInnerHTML: __html: ""
+        })
       )
       (div {className:'length',key:'length'}, "#{@state.length}/64 (#{Math.ceil @state.length / 64})")
     ]

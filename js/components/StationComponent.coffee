@@ -122,7 +122,7 @@ module.exports = recl
           className:"action add"
           placeholder:"+ Listen"
           @onKeyUp
-        }, "")
+        })
       sourcesSum = @state.configs[@state.station].sources.length
     else
       sources = ""
