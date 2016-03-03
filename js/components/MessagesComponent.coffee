@@ -67,7 +67,7 @@ module.exports = recl
           else message.key
           #message.thought.statement.date
 
-  componentWillMount: -> Infinite = require 'react-infinite'
+  componentWillMount: -> Infinite = window.Infinite # require 'react-infinite'
 
   componentDidMount: ->
     MessageStore.addChangeListener @_onChangeStore

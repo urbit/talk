@@ -9,7 +9,6 @@
     "husl": "^6.0.1",
     "lodash": "~2.4.1",
     "moment-timezone": "~0.2.4",
-    "react-infinite": "^0.7.1",
     "envify": "^3.4.0",
     "watchify": "^3.7.0",
     "node-sass": "^3.4.2"
