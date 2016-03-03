@@ -19,7 +19,8 @@ module.exports = recl
     "~#{h}.#{m}.#{s}"
 
   _handleAudi: (e) ->
-    audi = _.map $(e.target).closest('.path').find('div'), (div) -> return "~"+$(div).text()
+    audi = _.map $(e.target).closest('.path').find('div'), (div) -> 
+      return "~"+$(div).text()
     @props._handleAudi audi
 
   _handlePm: (e) ->
@@ -28,38 +29,46 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
-  renderSpeech: ({lin,app,exp,tax, url, mor,fat})-> switch # one of
-    when (con = lin or app or exp or tax)
-      con.txt
-    when url
-      (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
-    when mor then mor.map @renderSpeech
-    when fat
-      (div {},
-        (@renderSpeech fat.taf)
-        (div {className:"fat"}, @renderTorso fat.tor)
-      )
-    else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
+  renderSpeech: ({lin,app,exp,tax,url,mor,fat,com}) ->  # one of
+    switch
+      when (lin or app or exp or tax)
+        (lin or app or exp or tax).txt
+      when url
+        (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
+      when com
+        (div {},
+          com.txt
+          (div {}, (a {className:"btn", href: com.url}, "Go to thread"))
+        )
+      when mor then mor.map @renderSpeech
+      when fat
+        (div {},
+          (@renderSpeech fat.taf)
+          (div {className:"fat"}, @renderTorso fat.tor)
+        )
+      else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
-  renderTorso: ({text,tank,name}) -> switch  # one of
-    when text? then text
-    when tank? then pre {}, tank.join("\n")
-    when name? then (div {}, name.nom, ": ", @renderTorso name.mon)
-    else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
+  renderTorso: ({text,tank,name}) -> # one of
+    switch
+      when text? then text
+      when tank? then pre {}, tank.join("\n")
+      when name? then (div {}, name.nom, ": ", @renderTorso name.mon)
+      else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
 
-  classesInSpeech: ({url,exp, app,lin, mor,fat})-> switch # at most one of
-    when url then "url"
-    when exp then "exp"
-    when app then "say"
-    when lin then {say: lin.say is false}
-    when mor then mor?.map @classesInSpeech
-    when fat then @classesInSpeech fat.taf
+  classesInSpeech: ({url,exp,app,lin,mor,fat}) -> # at most one of
+    switch
+      when url then "url"
+      when exp then "exp"
+      when app then "say"
+      when lin then {say: lin.say is false}
+      when mor then mor?.map @classesInSpeech
+      when fat then @classesInSpeech fat.taf
 
   render: ->
-    # pendingClass = clas pending: @props.pending isnt "received"
     {thought} = @props
     delivery = _.uniq _.pluck thought.audience, "delivery"
     speech = thought.statement.speech
+    bouquet = thought.statement.bouquet
     if !speech? then return;
     
     name = if @props.name then @props.name else ""
@@ -69,10 +78,21 @@ module.exports = recl
     mainStation = window.util.mainStationPath(window.urb.user)
     type = if mainStation in aude then 'private' else 'public'
 
+    if(_.filter(bouquet, ["comment"]).length > 0)
+      comment = true
+      for k,v of speech.mor
+        if v.fat 
+          url = v.fat.taf.url.txt
+          txt = v.fat.tor.text
+        if v.app then path = v.app.txt.replace "comment on ", ""
+      audi = (a {href:url}, path)
+      speech = {com:{txt,url}}
+
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
       (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
       {'new': @props.unseen}
+      {comment}
       @classesInSpeech speech
         
     (div {className, 'data-index':@props.index, key:"message"},
@@ -85,5 +105,5 @@ module.exports = recl
           h3 {className:"time",key:"time"}, @convTime thought.statement.date
         )
         (div {className:"speech",key:"speech"}, 
-          @renderSpeech speech
+          @renderSpeech speech,bouquet
     ))
