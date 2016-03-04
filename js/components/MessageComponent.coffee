@@ -1,4 +1,3 @@
-moment = require 'moment-timezone'
 clas = require 'classnames'
 
 recl = React.createClass

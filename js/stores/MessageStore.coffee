@@ -1,4 +1,4 @@
-moment = require 'moment-timezone'
+moment = window.moment.tz
 
 EventEmitter = require('events').EventEmitter
 
