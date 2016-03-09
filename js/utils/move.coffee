@@ -61,5 +61,3 @@ $(window).on 'scroll', (e) ->
 
   ldy = dy
   so.ls = so.cs
-
-$(window).on 'scroll', window.util.checkScroll

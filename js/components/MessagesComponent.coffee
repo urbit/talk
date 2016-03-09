@@ -74,11 +74,13 @@ module.exports = recl
     StationStore.addChangeListener @_onChangeStore
     if @state.station and @state.listening.indexOf(@state.station) is -1
       MessageActions.listenStation @state.station
-    $(window).on 'scroll', @checkMore
+    if not @props.readOnly?
+      $(window).on 'scroll', @checkMore
+      window.util.scrollToBottom()
     @focused = true
     $(window).on 'blur', @_blur
     $(window).on 'focus', @_focus
-    window.util.scrollToBottom()
+    
     
   componentWillUpdate: (props, state)->
     $window = $ window
@@ -97,7 +99,7 @@ module.exports = recl
       @setOffset = scrollTop
 
   componentDidUpdate: (_props, _state)->
-    if @setOffset
+    if @setOffset and not @props.readOnly?
       $(window).scrollTop @setOffset
       @setOffset = null      
 
@@ -154,12 +156,15 @@ module.exports = recl
         glyph: @state.glyph[(_.keys message.thought.audience).join " "]
         unseen: lastIndex and lastIndex is index
       })
-        
-    (div {className:"grams", key:"messages"},
-      React.createElement Infinite, {
+    
+    if not @props.readOnly?
+      body = React.createElement Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight
           elementHeight: messageHeights
           key:"messages-infinite"
         }, _messages
-    )
+    else
+      body = _messages
+
+    (div {className:"grams", key:"messages"}, body)

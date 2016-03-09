@@ -32,6 +32,9 @@ TreeActions.registerComponent "talk", React.createClass
     require './utils/util.coffee'
     require './utils/move.coffee'
 
+    if not @props.readonly
+      $(window).on 'scroll', window.util.checkScroll
+
     station = @getStation()
     StationActions.listen()
     StationActions.listenStation station
