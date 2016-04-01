@@ -5,6 +5,13 @@ recl = React.createClass
 
 Member          = require './MemberComponent.coffee'
 
+yaml = (x,pad="")->
+  if "object" isnt typeof x
+    ""+x
+  else (for k,v of x
+    "\n" + pad + k + ": " + (yaml v, pad+"  ")
+  ).join ''
+
 module.exports = recl
   displayName: "Message"
   
@@ -28,7 +35,7 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
-  renderSpeech: ({lin,app,exp,tax,url,mor,fat,com}) ->  # one of
+  renderSpeech: ({lin,app,exp,tax,url,mor,fat,api,com}) ->  # one of
     switch
       when (lin or app or exp or tax)
         (lin or app or exp or tax).txt
@@ -45,6 +52,11 @@ module.exports = recl
           (@renderSpeech fat.taf)
           (div {className:"fat"}, @renderTorso fat.tor)
         )
+      when api
+        (div {},
+           (a {href:api.url}, "[Piped data]")
+           (pre {}, yaml api)
+        )
       else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
   renderTorso: ({text,tank,name}) -> # one of
@@ -54,9 +66,10 @@ module.exports = recl
       when name? then (div {}, name.nom, ": ", @renderTorso name.mon)
       else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
 
-  classesInSpeech: ({url,exp,app,lin,mor,fat}) -> # at most one of
+  classesInSpeech: ({url,api,exp,app,lin,mor,fat}) -> # at most one of
     switch
       when url then "url"
+      when api then "api"
       when exp then "exp"
       when app then "say"
       when lin then {say: lin.say is false}
