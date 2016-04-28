@@ -1,3 +1,5 @@
+util = require '../util.coffee'
+
 window.urb.appl = "talk"
 send = (data,cb)-> window.urb.send data, {mark:"talk-command"}, cb
 design = (party,config,cb)-> send {design:{party,config}}, cb
@@ -49,7 +51,7 @@ module.exports = ({StationActions})->
       when ok
         StationActions.listeningStation station
       when group
-        group.global[window.util.mainStationPath(window.urb.user)] =
+        group.global[util.mainStationPath(window.urb.user)] =
           group.local
         StationActions.loadMembers group.global
       when cabal?.loc

@@ -1,7 +1,10 @@
+util = require './util.coffee'
+
+_.merge window, {util, talk:{online:yes}}
+
 StationActions = require './actions/StationActions.coffee'
 TreeActions = window.tree.actions
 
-window.talk = {online:yes}
 
 setInterval (->
   window.talk.online = window.urb.poll.dely < 500
@@ -26,14 +29,12 @@ WritingComponent    = React.createFactory require './components/WritingComponent
 
 TreeActions.registerComponent "talk", React.createClass
   displayName:"talk"
-  getStation: -> @props.station or window.util.defaultStation()
+  getStation: -> @props.station or util.defaultStation()
   
   componentWillMount: -> 
-    require './utils/util.coffee'
-    require './utils/move.coffee'
 
     if not @props.readonly
-      $(window).on 'scroll', window.util.checkScroll
+      $(window).on 'scroll', util.checkScroll
 
     station = @getStation()
     StationActions.listen()

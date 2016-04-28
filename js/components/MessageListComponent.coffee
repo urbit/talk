@@ -1,3 +1,4 @@
+util = require '../util.coffee'
 Infinite = null
 
 recl = React.createClass
@@ -80,7 +81,7 @@ module.exports = recl
       MessageActions.listenStation @state.station
     if not @props.readOnly?
       $(window).on 'scroll', @checkMore
-      window.util.scrollToBottom()
+      util.scrollToBottom()
     @focused = true
     $(window).on 'blur', @_blur
     $(window).on 'focus', @_focus
@@ -123,7 +124,7 @@ module.exports = recl
   _onChangeStore: -> @setState @stateFromStore()
 
   _handlePm: (user) ->
-    audi = [window.util.mainStationPath(user)]
+    audi = [util.mainStationPath(user)]
     if user is window.urb.user then audi.pop()
     StationActions.setAudience audi
 

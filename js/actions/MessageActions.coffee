@@ -1,3 +1,5 @@
+util = require '../util.coffee'
+
 Dispatcher   =  require '../dispatcher/Dispatcher.coffee'
 
 _persistence = require '../persistence/MessagePersistence.coffee'
@@ -21,9 +23,9 @@ Persistence = _persistence MessageActions: module.exports =
     Persistence.get station,start,end
 
   sendMessage: (txt,audience) ->
-    serial = window.util.uuid32()
+    serial = util.uuid32()
 
-    # audience.push window.util.mainStationPath window.urb.user
+    # audience.push util.mainStationPath window.urb.user
     audience = _.uniq audience
 
     _audi = {}
@@ -63,7 +65,7 @@ Persistence = _persistence MessageActions: module.exports =
       message =
         ship:window.urb.ship
         thought:
-          serial:window.util.uuid32()
+          serial:util.uuid32()
           audience:_audi
           statement:
             bouquet:[]

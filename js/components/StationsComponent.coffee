@@ -1,3 +1,4 @@
+util = require '../util.coffee'
 recl = React.createClass
 {div,input} = React.DOM
 
@@ -49,7 +50,7 @@ module.exports = recl
     stations = @state.stations.map (_station) ->
       k = "station"
       parts = [(div {className:"name"}, _station.name)]
-      if _station.name isnt window.util.mainStation()
+      if _station.name isnt util.mainStation()
         parts.push (div {className:"remove",onClick:_remove,dataStation:_station.name},"×")
       div {className:k,onClick:_click},parts
 

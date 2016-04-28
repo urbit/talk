@@ -1,3 +1,4 @@
+util = require '../util.coffee'
 clas = require 'classnames'
 
 recl = React.createClass
@@ -72,9 +73,9 @@ module.exports = recl
     
     name = if @props.name then @props.name else ""
     aude = _.keys thought.audience
-    audi = window.util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi.slice(1))
+    audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi.slice(1))
 
-    mainStation = window.util.mainStationPath(window.urb.user)
+    mainStation = util.mainStationPath(window.urb.user)
     type = if mainStation in aude then 'private' else 'public'
 
     if(_.filter(bouquet, ["comment"]).length > 0)

@@ -1,14 +1,12 @@
-if not window.util then window.util = {}
-_.merge window.util,
-
+module.exports = util = 
   defaultStation: -> 
     if document.location.search
       document.location.search.replace /^\?/,''
-    else window.util.mainStation()
+    else util.mainStation()
   
   mainStations: ["court","floor","porch"]
   
-  mainStationPath: (user) -> "~#{user}/#{window.util.mainStation user}"
+  mainStationPath: (user) -> "~#{user}/#{util.mainStation user}"
 
   mainStation: (user) ->
     if not user then user = window.urb.user
@@ -22,14 +20,14 @@ _.merge window.util,
 
   clipAudi: (audi) ->
     audi = audi.join " "
-    ms = window.util.mainStationPath window.urb.user
+    ms = util.mainStationPath window.urb.user
     regx = new RegExp "/#{ms}","g"
     audi = audi.replace regx,""
     audi.split " "
 
   expandAudi: (audi) ->
     audi = audi.join " "
-    ms = window.util.mainStationPath window.urb.user
+    ms = util.mainStationPath window.urb.user
     if audi.indexOf(ms) is -1 
       if audi.length > 0
         audi += " "
@@ -62,7 +60,7 @@ _.merge window.util,
       _audi = {}
       _audi[station] = "pending"
       _message =
-        serial:window.util.uuid32()
+        serial:util.uuid32()
         audience:_audi
         statement:
           speech:
@@ -80,12 +78,12 @@ _.merge window.util,
                        $(window).height()
 
   setScroll: ->
-    window.util.getScroll()
+    util.getScroll()
     $(window).scrollTop($(".container").height())
 
   isScrolling: ->
-    if not window.util.writingPosition
-      window.util.getScroll()
+    if not util.writingPosition
+      util.getScroll()
     return ($(window).scrollTop()+$('.writing').outerHeight() <
-            window.util.writingPosition)
+            util.writingPosition)
 

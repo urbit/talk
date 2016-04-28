@@ -1,3 +1,4 @@
+util = require '../util.coffee'
 recl = React.createClass
 {div,br,input,textarea} = React.DOM
 
@@ -89,8 +90,8 @@ module.exports = recl
       typing:StationStore.getTyping()
       station:StationStore.getStation()
       valid:StationStore.getValidAudience()
-    s.audi = _.without s.audi, window.util.mainStationPath window.urb.user
-    s.ludi = _.without s.ludi, window.util.mainStationPath window.urb.user
+    s.audi = _.without s.audi, util.mainStationPath window.urb.user
+    s.ludi = _.without s.ludi, util.mainStationPath window.urb.user
     s
 
   getInitialState: -> _.extend @stateFromStore(), length:0, lengthy: false
@@ -196,7 +197,7 @@ module.exports = recl
     valid = @_validateAudi()
     StationActions.setValidAudience valid
     if valid is true
-      stan = $('#audience .input').text() || window.util.mainStationPath window.urb.user
+      stan = $('#audience .input').text() || util.mainStationPath window.urb.user
       stan = (stan.split /\ +/).map (v)->
         if v[0] is "~" then v else "~"+v
       StationActions.setAudience stan
@@ -220,7 +221,7 @@ module.exports = recl
     selection.addRange(range)
 
   componentDidMount: ->
-    window.util.sendMessage = @sendMessage
+    util.sendMessage = @sendMessage
     StationStore.addChangeListener @_onChangeStore
     MessageStore.addChangeListener @_onChangeStore
     @$el = $ ReactDOM.findDOMNode @
@@ -246,7 +247,7 @@ module.exports = recl
     name = if iden then iden.name else ""
 
     audi = if @state.audi.length is 0 then @state.ludi else @state.audi
-    audi = window.util.clipAudi audi
+    audi = util.clipAudi audi
     for k,v of audi
       audi[k] = v.slice(1)
 

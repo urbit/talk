@@ -1,3 +1,4 @@
+util = require '../util.coffee'
 clas        = require 'classnames'
 
 recl = React.createClass
@@ -15,7 +16,7 @@ module.exports = recl
   stateFromStore: -> {
     audi:StationStore.getAudience()
     members:StationStore.getMembers()
-    station:window.util.mainStation()
+    station:util.mainStation()
     stations:StationStore.getStations()
     configs:StationStore.getConfigs()
     fetching:MessageStore.getFetching()
@@ -174,7 +175,7 @@ module.exports = recl
     #     (rele Load, {})  if @state.fetching
     #     (div {id:"where"},
     #       div {className:"slat"},"talk"
-    #       div {className:"path"} #, window.util.mainStation(window.urb.user))
+    #       div {className:"path"} #, util.mainStation(window.urb.user))
     #       div {className:"caret"}
     #     )
     #     div {id:"offline"}, "Warning: no connection to server."
