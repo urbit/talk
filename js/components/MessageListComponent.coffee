@@ -21,6 +21,7 @@ module.exports = recl
   displayName: "Messages"
   pageSize: 50
   paddingTop: 100
+  paddingBottom: 100
 
   stateFromStore: -> {
     messages:MessageStore.getAll()
@@ -46,8 +47,16 @@ module.exports = recl
     $('.message.new').removeClass 'new'
     document.title = document.title.replace /\ \([0-9]*\)/, ""
 
-  checkMore: ->
-    if $(window).scrollTop() < @paddingTop &&
+  # container: -> $(@props.container ? window)
+  atScrollEdge: ->
+    switch @props.chrono 
+      when "reverse"
+        $(window).height() <
+          $(window).scrollTop() + $(window)[0].innerHeight + @paddingBottom
+      else $(window).scrollTop() < @paddingTop
+
+  checkMore: -> 
+    if @atScrollEdge() &&
         @state.fetching is false &&
         this.state.last &&
         this.state.last > 0
@@ -79,8 +88,9 @@ module.exports = recl
     StationStore.addChangeListener @_onChangeStore
     if @state.station and @state.listening.indexOf(@state.station) is -1
       MessageActions.listenStation @state.station
-    if not @props.readOnly?
+    unless @props.static?
       $(window).on 'scroll', @checkMore
+    unless @props.chrono is "reverse"
       util.scrollToBottom()
     @focused = true
     $(window).on 'blur', @_blur
