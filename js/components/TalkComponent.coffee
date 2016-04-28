@@ -2,9 +2,9 @@ recl = React.createClass
 recf = React.createFactory
 {div} = React.DOM
 
-StationComponent    = recf require './StationComponent.coffee'
-MessagesComponent   = recf require './MessagesComponent.coffee'
-WritingComponent    = recf require './WritingComponent.coffee'
+StationComponent      = recf require './StationComponent.coffee'
+MessageListComponent  = recf require './MessageListComponent.coffee'
+WritingComponent      = recf require './WritingComponent.coffee'
 
 module.exports = recl
   render: ->

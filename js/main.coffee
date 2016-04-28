@@ -19,7 +19,7 @@ setInterval (->
 
 
 StationComponent    = require './components/StationComponent.coffee'
-MessagesComponent   = React.createFactory require './components/MessagesComponent.coffee'
+MessageListComponent   = React.createFactory require './components/MessageListComponent.coffee'
 WritingComponent    = React.createFactory require './components/WritingComponent.coffee'
 
 {div,link} = React.DOM
@@ -44,7 +44,7 @@ TreeActions.registerComponent "talk", React.createClass
     station =  @getStation()
     (div {key:"talk-container"}, [
       (div {key:"grams-container"},
-        (MessagesComponent _.merge({},@props,{station,key:'grams'}), '')
+        (MessageListComponent _.merge({},@props,{station,key:'grams'}), '')
       )
       unless @props.readOnly?
         (div {key:'writing-container'},

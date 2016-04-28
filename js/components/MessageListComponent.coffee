@@ -9,8 +9,12 @@ StationActions  = require '../actions/StationActions.coffee'
 StationStore    = require '../stores/StationStore.coffee'
 Message         = require './MessageComponent.coffee'
 
-MESSAGE_HEIGHT_FIRST = 96.75
-MESSAGE_HEIGHT_SAME  = 36     # XX measure 96.75
+# Infinite scrolling requires overriding CSS heights. Turn this off to measure
+# the true heights of messages
+# XX rems
+INFINITE = yes 
+MESSAGE_HEIGHT_FIRST = 54
+MESSAGE_HEIGHT_SAME  = 27
 
 module.exports = recl
   displayName: "Messages"
@@ -145,11 +149,13 @@ module.exports = recl
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
 
-      messageHeights.push (if sameAs then MESSAGE_HEIGHT_SAME else MESSAGE_HEIGHT_FIRST)
+      height = if INFINITE
+        if sameAs then MESSAGE_HEIGHT_SAME else MESSAGE_HEIGHT_FIRST
+      messageHeights.push height
 
       {speech} = message.thought.statement
       React.createElement Message, (_.extend {}, message, {
-        station, sameAs, @_handlePm, @_handleAudi, 
+        station, sameAs, @_handlePm, @_handleAudi, height
         index: message.key
         key: "message-#{message.key}"
         ship: if speech?.app then "system" else message.ship
@@ -157,7 +163,7 @@ module.exports = recl
         unseen: lastIndex and lastIndex is index
       })
     
-    if not @props.readOnly?
+    if (not @props.readOnly?) and INFINITE
       body = React.createElement Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight

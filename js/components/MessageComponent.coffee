@@ -93,8 +93,9 @@ module.exports = recl
       {'new': @props.unseen}
       {comment}
       @classesInSpeech speech
-        
-    (div {className, 'data-index':@props.index, key:"message"},
+    
+    style = height: @props.height
+    (div {className, 'data-index':@props.index, key:"message", style},
         (div {className:"meta",key:"meta"},
           label {className:"type #{type}",key:"glyph","data-glyph":(@props.glyph || "*")}
           (h2 {className:'author planet',onClick:@_handlePm,key:"member"},
