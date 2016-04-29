@@ -19,7 +19,7 @@ MESSAGE_HEIGHT_SAME  = 27
 
 module.exports = recl
   displayName: "Messages"
-  pageSize: 50
+  pageSize: 200
   paddingTop: 100
   paddingBottom: 100
 
