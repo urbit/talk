@@ -38,8 +38,8 @@ module.exports = ({MessageActions}) ->
           console.log 'done'
           console.log res
 
-  sendMessage: (message,cb) ->
-    send {publish: [message]}, (err,res) ->
+  sendMessage: (messageType, message,cb) ->
+    send {"#{messageType}": [message]}, (err,res) ->
       console.log 'sent'
       console.log arguments
       cb(err,res) if cb

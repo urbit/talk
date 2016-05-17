@@ -22,7 +22,7 @@ Persistence = _persistence MessageActions: module.exports =
     Dispatcher.handleViewAction type:"messages-fetch"      
     Persistence.get station,start,end
 
-  sendMessage: (txt,audience) ->
+  sendMessage: (txt,audience,global=(urb.user is urb.ship)) ->
     serial = util.uuid32()
 
     # audience.push util.mainStationPath window.urb.user
@@ -73,5 +73,6 @@ Persistence = _persistence MessageActions: module.exports =
             date: Date.now()
 
       Dispatcher.handleViewAction {message,type:"message-send"}
-      Persistence.sendMessage message.thought
+      messageType = (if global then "publish" else "review")
+      Persistence.sendMessage messageType, message.thought
 

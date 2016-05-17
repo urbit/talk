@@ -111,6 +111,8 @@ module.exports = recl
     @cursorAtEnd
 
   addCC: (audi) ->
+    if urb.user isnt urb.ship
+      return audi
     listening = @state.config[@props.station]?.sources ? []
     if _.isEmpty _.intersection audi, listening
       audi.push "~#{window.urb.user}/#{@props.station}"
