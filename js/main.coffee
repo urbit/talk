@@ -43,7 +43,7 @@ TreeActions.registerComponent "talk", React.createClass
 
   render: ->
     station =  @getStation()
-    (div {key:"talk-container"}, [
+    children = [
       (div {key:"grams-container"},
         (MessageListComponent _.merge({},@props,{station,key:'grams'}), '')
       )
@@ -51,6 +51,9 @@ TreeActions.registerComponent "talk", React.createClass
         (div {key:'writing-container'},
           (WritingComponent _.merge({},@props,{station,key:'writing'}), '')
         )
-    ])
+    ]
+    if @props.chrono is "reverse"
+      children = children.reverse()
+    (div {key:"talk-container"}, children)
     
 TreeActions.registerComponent "talk-station", StationComponent
