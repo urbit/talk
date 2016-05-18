@@ -67,7 +67,7 @@ Audience = recl
     div {className:'audience',id:'audience',key:'audience'}, (div {
           className:"input valid-#{@props.valid}"
           key:'input'
-          contentEditable:true
+          contentEditable: true if @props.editable
           @onKeyDown
           onBlur:@props.onBlur
           dangerouslySetInnerHTML: textToHTML @props.audi.join(" ")
@@ -258,6 +258,7 @@ module.exports = recl
         audi
         valid:@state.valid
         validate:@_validateAudi
+        editable: not @props['audience-lock']?
         onBlur:@_setAudi })
       (div {className:'message',id:'message',key:'message'}, 
         (div {

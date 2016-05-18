@@ -1,7 +1,9 @@
 // input
 
 .input {
-  border-bottom: 3px solid #000;
+  &[contenteditable] {
+    border-bottom: 3px solid #000;
+  }
   display: inline-block;
   line-height: 2rem;
   font-size: 1rem;
