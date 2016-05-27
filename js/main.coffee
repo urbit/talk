@@ -30,8 +30,8 @@ WritingComponent    = React.createFactory require './components/WritingComponent
 TreeActions.registerComponent "talk", React.createClass
   displayName:"talk"
   getStation: -> @props.station or util.defaultStation()
-  
-  componentWillMount: -> 
+
+  componentWillMount: ->
 
     if not @props.readonly
       $(window).on 'scroll', util.checkScroll
@@ -55,5 +55,5 @@ TreeActions.registerComponent "talk", React.createClass
     if @props.chrono is "reverse"
       children = children.reverse()
     (div {key:"talk-container"}, children)
-    
+
 TreeActions.registerComponent "talk-station", StationComponent

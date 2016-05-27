@@ -13,7 +13,7 @@ Message         = require './MessageComponent.coffee'
 # Infinite scrolling requires overriding CSS heights. Turn this off to measure
 # the true heights of messages
 # XX rems
-INFINITE = yes 
+INFINITE = yes
 MESSAGE_HEIGHT_FIRST = 54
 MESSAGE_HEIGHT_SAME  = 27
 
@@ -49,13 +49,13 @@ module.exports = recl
 
   # container: -> $(@props.container ? window)
   atScrollEdge: ->
-    switch @props.chrono 
+    switch @props.chrono
       when "reverse"
         $(window).height() <
           $(window).scrollTop() + $(window)[0].innerHeight + @paddingBottom
       else $(window).scrollTop() < @paddingTop
 
-  checkMore: -> 
+  checkMore: ->
     if @atScrollEdge() &&
         @state.fetching is false &&
         this.state.last &&
@@ -65,7 +65,7 @@ module.exports = recl
       @lastLength = @length
       MessageActions.getMore @state.station,(@state.last+1),end
 
-  setAudience: -> 
+  setAudience: ->
     return if @state.typing or not @last
     laudi = _.keys @last.thought.audience
     return if (_.isEmpty laudi) or not
@@ -74,7 +74,7 @@ module.exports = recl
 
   sortedMessages: (messages) ->
     station = @state.station
-    _.sortBy messages, (message) => 
+    _.sortBy messages, (message) =>
           message.pending = message.thought.audience[station]
           if @props.chrono is "reverse"
             -message.key
@@ -95,28 +95,28 @@ module.exports = recl
     @focused = true
     $(window).on 'blur', @_blur
     $(window).on 'focus', @_focus
-    
-    
+
+
   componentWillUpdate: (props, state)->
     $window = $ window
     scrollTop = $window.scrollTop()
     old = {}; old[key] = true for {key} in @state.messages
     lastSaid = null
-    for message in state.messages 
+    for message in state.messages
       nowSaid = [message.ship,message.thought.audience]
       if not old[message.key]
         sameAs = _.isEqual lastSaid, nowSaid
-        scrollTop +=  if sameAs 
-                        MESSAGE_HEIGHT_SAME 
+        scrollTop +=  if sameAs
+                        MESSAGE_HEIGHT_SAME
                       else
                         MESSAGE_HEIGHT_FIRST
       lastSaid = nowSaid
       @setOffset = scrollTop
 
   componentDidUpdate: (_props, _state)->
-    if @setOffset and not @props.readOnly?
+    if @setOffset and @props.chrono isnt "reverse"
       $(window).scrollTop @setOffset
-      @setOffset = null      
+      @setOffset = null
 
     if @focused is false and @last isnt @lastSeen
       _messages = @sortedMessages @state.messages
@@ -125,8 +125,8 @@ module.exports = recl
       if document.title.match(/\([0-9]*\)/)
         document.title = document.title.replace /\([0-9]*\)/, "(#{d})"
       else
-        document.title = document.title + " (#{d})" 
-      
+        document.title = document.title + " (#{d})"
+
   componentWillUnmount: ->
     MessageStore.removeChangeListener @_onChangeStore
     StationStore.removeChangeListener @_onChangeStore
@@ -134,6 +134,7 @@ module.exports = recl
   _onChangeStore: -> @setState @stateFromStore()
 
   _handlePm: (user) ->
+    return if @props.chrono is 'reverse'
     audi = [util.mainStationPath(user)]
     if user is window.urb.user then audi.pop()
     StationActions.setAudience audi
@@ -143,7 +144,7 @@ module.exports = recl
   render: ->
     station = @state.station
     messages = @sortedMessages @state.messages
-    
+
     @last = messages[messages.length-1]
     if @last?.ship && @last.ship is window.urb.user then @lastSeen = @last
     @length = messages.length
@@ -152,9 +153,9 @@ module.exports = recl
 
     lastIndex = if @lastSeen then messages.indexOf(@lastSeen)+1 else null
     lastSaid = null
-    
+
     messageHeights = []
-    
+
     _messages = messages.map (message,index) =>
       nowSaid = [message.ship,_.keys(message.thought.audience)]
       sameAs = _.isEqual lastSaid, nowSaid
@@ -173,7 +174,7 @@ module.exports = recl
         glyph: @state.glyph[(_.keys message.thought.audience).join " "]
         unseen: lastIndex and lastIndex is index
       })
-    
+
     if (not @props.readOnly?) and INFINITE
       body = React.createElement Infinite, {
           useWindowAsScrollContainer: true

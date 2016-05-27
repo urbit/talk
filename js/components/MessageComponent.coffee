@@ -8,7 +8,7 @@ Member          = require './MemberComponent.coffee'
 
 module.exports = recl
   displayName: "Message"
-  
+
   lz: (n) -> if n<10 then "0#{n}" else "#{n}"
 
   convTime: (time) ->
@@ -19,7 +19,7 @@ module.exports = recl
     "~#{h}.#{m}.#{s}"
 
   _handleAudi: (e) ->
-    audi = _.map $(e.target).closest('.path').find('div'), (div) -> 
+    audi = _.map $(e.target).closest('.path').find('div'), (div) ->
       return "~"+$(div).text()
     @props._handleAudi audi
 
@@ -70,7 +70,7 @@ module.exports = recl
     speech = thought.statement.speech
     bouquet = thought.statement.bouquet
     if !speech? then return;
-    
+
     name = if @props.name then @props.name else ""
     aude = _.keys thought.audience
     audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi.slice(1))
@@ -81,7 +81,7 @@ module.exports = recl
     if(_.filter(bouquet, ["comment"]).length > 0)
       comment = true
       for k,v of speech.mor
-        if v.fat 
+        if v.fat
           url = v.fat.taf.url.txt
           txt = v.fat.tor.text
         if v.app then path = v.app.txt.replace "comment on ", ""
@@ -94,7 +94,7 @@ module.exports = recl
       {'new': @props.unseen}
       {comment}
       @classesInSpeech speech
-    
+
     style = height: @props.height
     (div {className, 'data-index':@props.index, key:"message", style},
         (div {className:"meta",key:"meta"},
@@ -105,6 +105,6 @@ module.exports = recl
           h3 {className:"path",onClick:@_handleAudi,key:"audi"}, audi
           h3 {className:"time",key:"time"}, @convTime thought.statement.date
         )
-        (div {className:"speech",key:"speech"}, 
+        (div {className:"speech",key:"speech"},
           @renderSpeech speech,bouquet
     ))

@@ -44,7 +44,7 @@
   }
 
   h3 { 
-    margin-left: 2rem; 
+    margin-left: 2rem;
     line-height: 1rem;
   }
   .time { padding-right: 2rem; }
@@ -54,7 +54,7 @@ div.gram.first:first-of-type { margin-top: 0; }
 div.gram.first { margin-top: $grid-gutter-width; }
 div.gram.same div.meta { display: none; }
 
-div.gram.same:hover div.meta { 
+div.gram.same:hover div.meta {
   display: block;
   position: absolute;
   background-color: #fff;
@@ -64,7 +64,7 @@ div.gram.same:hover div.meta {
 
 .speech { margin-left: $grid-gutter-width; }
 
-.exp { 
+.exp {
   font-family: 'scp';
   font-size: .9rem;
 
@@ -80,8 +80,8 @@ div.gram.same:hover div.meta {
     padding: .3rem;
   }
 
-  .fat { 
-    max-height: 0; 
+  .fat {
+    max-height: 0;
     transition: max-height .1s ease-in-out;
     overflow: hidden;
   }
@@ -96,7 +96,7 @@ div.gram.same:hover div.meta {
   }
 }
 
-.comment { 
+.comment {
   // .speech {
   //   max-height: 2rem;
   //   overflow: hidden;
@@ -125,7 +125,7 @@ div.gram.same:hover div.meta {
 
 .gram pre { background-color: transparent; }
 
-div.gram label { background-color: $blue; } 
+div.gram label { background-color: $blue; }
 div.gram.say .speech { font-style: italic; }
 div.gram.pending .speech { color: $gray-light; }
 
