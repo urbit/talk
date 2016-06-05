@@ -20,6 +20,9 @@ input.action { @include placeholder {
 input.action:focus { @include placeholder { color: transparent; }}
 
 .menu {
+  max-height: 100%;
+  overflow: scroll;
+
   .name,
   .planet {
     display: inline-block;

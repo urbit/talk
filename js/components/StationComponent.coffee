@@ -97,8 +97,8 @@ module.exports = recl
             (div {className:"close"}, "✕")
             (h2 {},
               (span {}, "Members")
-              (label {className:"sum"}
-              _.keys(members).length)
+              (label {className:"sum"},
+                _.keys(members).length)
             )
             (for member of members
               (div {key:member},
