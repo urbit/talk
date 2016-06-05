@@ -9,6 +9,9 @@
 }
 
 .grams .meta {
+  max-height: 1.6rem;
+  overflow: hidden;
+
   label {
     margin-right: $grid-gutter-width/2;
     height: $grid-gutter-width/2;
