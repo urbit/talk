@@ -1,11 +1,12 @@
-module.exports = util = 
-  defaultStation: -> 
+module.exports = util =
+  defaultStation: ->
     if document.location.search
-      document.location.search.replace /^\?/,''
+      station = document.location.search.replace /^\?/,''
+      if station.indexOf('dbg.nopack') isnt -1 then station = util.mainStation()
     else util.mainStation()
-  
+
   mainStations: ["court","floor","porch"]
-  
+
   mainStationPath: (user) -> "~#{user}/#{util.mainStation user}"
 
   mainStation: (user) ->
@@ -28,7 +29,7 @@ module.exports = util =
   expandAudi: (audi) ->
     audi = audi.join " "
     ms = util.mainStationPath window.urb.user
-    if audi.indexOf(ms) is -1 
+    if audi.indexOf(ms) is -1
       if audi.length > 0
         audi += " "
       audi += "#{ms}"
@@ -36,10 +37,10 @@ module.exports = util =
 
   create: (name) ->
     window.talk.StationPersistence.createStation name, (err,res) ->
-  
+
   subscribe: (name) ->
     window.talk.StationPersistence.addSource "main",window.urb.ship,["~zod/#{name}"]
-  
+
   uuid32: ->
     str = "0v"
     str += Math.ceil(Math.random()*8)+"."
@@ -86,4 +87,3 @@ module.exports = util =
       util.getScroll()
     return ($(window).scrollTop()+$('.writing').outerHeight() <
             util.writingPosition)
-

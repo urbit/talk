@@ -1,6 +1,3 @@
-@import "../bootstrap/scss/_custom.scss";
-@import "../bootstrap/scss/mixins/_urbit.scss";
-
 input.action {
   background-color: transparent;
   border-color: transparent;
@@ -12,8 +9,8 @@ input.action.valid-false {
   color: $red;
 }
 
-input.action { @include placeholder { 
-  color: #000; 
+input.action { @include placeholder {
+  color: #000;
   font-family: 'bau';
   font-size: 1rem;
 }}
@@ -34,8 +31,8 @@ input.action:focus { @include placeholder { color: transparent; }}
     font-size: .8rem;
   }
 
-  .room > div { 
-    display:inline; 
+  .room > div {
+    display:inline;
     cursor:pointer;
   }
   .room > div.selected { font-weight: 500; }
@@ -53,11 +50,11 @@ input.action:focus { @include placeholder { color: transparent; }}
   .room:hover .close { display: inline; }
   .room.disabled { opacity: .6; }
 
-  .name { 
+  .name {
     display: none; // for now
-    min-width: 33.333%; 
+    min-width: 33.333%;
     font-size: .9rem;
   }
-  
+
   .planet {  min-width: 66.667%;  }
 }
