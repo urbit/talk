@@ -51,6 +51,11 @@
   .time { padding-right: 2rem; }
 }
 
+div.gram.same .meta {
+  max-height: none;
+  overflow: auto;
+}
+
 div.gram.first:first-of-type { margin-top: 0; }
 div.gram.first { margin-top: $grid-gutter-width; }
 div.gram.same div.meta { display: none; }
