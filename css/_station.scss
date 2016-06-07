@@ -18,14 +18,12 @@ input.action:focus { @include placeholder { color: transparent; }}
 
 .menu {
   max-height: 100%;
-  overflow: scroll;
 
-  .planet { margin-bottom: .8rem; }
+  .planet,
+  .room { margin-bottom: .8rem; }
 
   .name,
-  .planet {
-    display: inline-block;
-  }
+  .planet { display: inline-block; }
 
   .name,
   .planet,
@@ -60,3 +58,5 @@ input.action:focus { @include placeholder { color: transparent; }}
 
   .planet {  min-width: 66.667%;  }
 }
+
+.menu.depth-2 { overflow: scroll; }

@@ -95,7 +95,9 @@ module.exports = recl
       {comment}
       @classesInSpeech speech
 
-    style = height: @props.height
+    style =
+      height: @props.height
+      marginTop: @props.marginTop
     (div {className, 'data-index':@props.index, key:"message", style},
         (div {className:"meta",key:"meta"},
           label {className:"type #{type}",key:"glyph","data-glyph":(@props.glyph || "*")}

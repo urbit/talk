@@ -71,7 +71,7 @@ module.exports = util =
       window.talk.MessagePersistence.sendMessage _message,send
     send()
 
-  scrollToBottom: -> $(window).scrollTop($(".container").height())
+  scrollToBottom: -> $(window).scrollTop($(".container").outerHeight(true))
 
   getScroll: ->
     @writingPosition = $('.container').outerHeight(true) +

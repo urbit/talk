@@ -15,6 +15,7 @@ Message         = require './MessageComponent.coffee'
 # XX rems
 INFINITE = yes
 MESSAGE_HEIGHT_FIRST = 54
+MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 36
 MESSAGE_HEIGHT_SAME  = 27
 
 module.exports = recl
@@ -161,13 +162,22 @@ module.exports = recl
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
 
-      height = if INFINITE
-        if sameAs then MESSAGE_HEIGHT_SAME else MESSAGE_HEIGHT_FIRST
-      messageHeights.push height
+      if INFINITE
+        if sameAs
+          height = MESSAGE_HEIGHT_SAME
+          marginTop = 0
+        else
+          height = MESSAGE_HEIGHT_FIRST
+          marginTop = MESSAGE_HEIGHT_FIRST_MARGIN_TOP
+      else
+        height = null
+        marginTop = null
+
+      messageHeights.push height+marginTop
 
       {speech} = message.thought.statement
       React.createElement Message, (_.extend {}, message, {
-        station, sameAs, @_handlePm, @_handleAudi, height
+        station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
         ship: if speech?.app then "system" else message.ship
