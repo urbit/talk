@@ -99,28 +99,21 @@ module.exports = recl
 
 
   componentWillUpdate: (props, state)->
-    $window = $ window
-    scrollTop = $window.scrollTop()
-    old = {}; old[key] = true for {key} in @state.messages
-    lastSaid = null
-    for message in state.messages
-      nowSaid = [message.ship,message.thought.audience]
-      if not old[message.key]
-        sameAs = _.isEqual lastSaid, nowSaid
-        scrollTop +=  if sameAs
-                        MESSAGE_HEIGHT_SAME
-                      else
-                        MESSAGE_HEIGHT_FIRST
-      lastSaid = nowSaid
-      @setOffset = scrollTop
+    @scrollBottom = $(document).height() - ($(window).scrollTop() + window.innerHeight)
+
 
   componentDidUpdate: (_props, _state)->
-    if @setOffset and @props.chrono isnt "reverse"
-      $(window).scrollTop @setOffset
-      @setOffset = null
+    _messages = @sortedMessages @state.messages
+    _oldMessages = @sortedMessages _state.messages
+    # a message with no key is pending
+    # XX should be message.pending: true
+    appendedToBottom = !_.last(_messages)?.key? or _.last(_messages)?.key > _.last(_oldMessages)?.key
+    setOffset = $(document).height() - window.innerHeight - @scrollBottom
+    if @props.chrono isnt "reverse"
+      unless @scrollBottom > 0 and appendedToBottom
+        $(window).scrollTop setOffset
 
     if @focused is false and @last isnt @lastSeen
-      _messages = @sortedMessages @state.messages
       d = _messages.length-_messages.indexOf(@lastSeen)-1
       t = document.title
       if document.title.match(/\([0-9]*\)/)
