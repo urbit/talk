@@ -103,12 +103,17 @@ module.exports = recl
 
 
   componentDidUpdate: (_props, _state)->
+    _messages = @sortedMessages @state.messages
+    _oldMessages = @sortedMessages _state.messages
+    # a message with no key is pending
+    # XX should be message.pending: true
+    appendedToBottom = !_.last(_messages)?.key? or _.last(_messages)?.key > _.last(_oldMessages)?.key
     setOffset = $(document).height() - window.innerHeight - @scrollBottom
     if @props.chrono isnt "reverse"
-      $(window).scrollTop setOffset
+      unless @scrollBottom > 0 and appendedToBottom
+        $(window).scrollTop setOffset
 
     if @focused is false and @last isnt @lastSeen
-      _messages = @sortedMessages @state.messages
       d = _messages.length-_messages.indexOf(@lastSeen)-1
       t = document.title
       if document.title.match(/\([0-9]*\)/)
