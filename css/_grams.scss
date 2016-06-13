@@ -1,5 +1,3 @@
-@import "../bootstrap/scss/_custom.scss";
-
 // grams
 
 .grams {
@@ -11,6 +9,9 @@
 }
 
 .grams .meta {
+  max-height: 1.6rem;
+  overflow: hidden;
+
   label {
     margin-right: $grid-gutter-width/2;
     height: $grid-gutter-width/2;
@@ -43,11 +44,16 @@
     padding-top: 0;
   }
 
-  h3 { 
+  h3 {
     margin-left: 2rem;
     line-height: 1rem;
   }
   .time { padding-right: 2rem; }
+}
+
+div.gram.same .meta {
+  max-height: none;
+  overflow: auto;
 }
 
 div.gram.first:first-of-type { margin-top: 0; }

@@ -29,7 +29,7 @@ module.exports = recl
     @$el = $(ReactDOM.findDOMNode())
     StationStore.addChangeListener @_onChangeStore
     if @state.listening.indexOf(@state.station) is -1
-      StationActions.listenStation @state.station      
+      StationActions.listenStation @state.station
   componentWillUnmount: ->
     StationStore.removeChangeListener @_onChangeStore
   _onChangeStore: -> @setState @stateFromStore()
@@ -87,8 +87,6 @@ module.exports = recl
         _clas = clas
           open:(@state.open is station)
           closed:!(@state.open is station)
-          'col-md-4':true
-          'col-md-offset-6':true
           menu:true
           'depth-2':true
 
@@ -97,8 +95,8 @@ module.exports = recl
             (div {className:"close"}, "✕")
             (h2 {},
               (span {}, "Members")
-              (label {className:"sum"}
-              _.keys(members).length)
+              (label {className:"sum"},
+                _.keys(members).length)
             )
             (for member of members
               (div {key:member},
@@ -135,8 +133,6 @@ module.exports = recl
     _clas = clas
       open:(@props.open is true)
       closed:(@props.open isnt true)
-      'col-md-4':true
-      'col-md-offset-2':true
       menu:true
       'depth-1':true
 
@@ -156,7 +152,7 @@ module.exports = recl
           #   (label {}, "")
           #   (span {}, "Message")
           # )
-          (h2 {}, 
+          (h2 {},
             (span {}, "Stations")
             (label {className:"sum"}, sourcesSum)
           )
@@ -167,7 +163,7 @@ module.exports = recl
     )
 
     # (div {id:"station",onClick:@_toggleOpen},
-    #   (div {id:"head"}, 
+    #   (div {id:"head"},
     #     (div {id:"who"},
     #       div {className:"sig"}
     #       div {className:"ship"},"#{window.urb.user}"
