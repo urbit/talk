@@ -7,10 +7,11 @@ module.exports = util =
 
   mainStations: ["court","floor","porch"]
 
-  mainStationPath: (user) -> "~#{user}/#{util.mainStation user}"
+  mainStationPath: (user) -> if user then "~#{user}/#{util.mainStation user}"
 
   mainStation: (user) ->
     if not user then user = window.urb.user
+    if not user then return
     switch user.length
       when 3
         return "court"
