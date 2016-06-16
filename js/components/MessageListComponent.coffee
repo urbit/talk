@@ -98,6 +98,9 @@ module.exports = recl
     @focused = true
     $(window).on 'blur', @_blur
     $(window).on 'focus', @_focus
+    $(window).on 'resize', _.debounce(=>
+      @forceUpdate()
+    , 250)
 
 
   componentWillUpdate: (props, state)->
