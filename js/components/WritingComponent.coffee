@@ -122,11 +122,16 @@ module.exports = recl
     if @_validateAudi() is false
       setTimeout (-> $('#audience .input').focus()), 0
       return
-    if @state.audi.length is 0 and $('#audience').text().trim().length > 0
-      audi = if @_setAudi() then @_setAudi() else @state.ludi
-    else
-      audi = @state.audi    
+    
+    unless @state.audi.length is 0 and $('#audience').text().trim().length > 0
+      audi = @state.audi
+    else if @props['audience-lock']?
+      audi = ["~#{window.urb.ship}/#{@props.station}"]
+    else 
+      audi = @_setAudi() or @state.ludi
+      
     audi = @addCC audi
+    
     txt = @$message.text().trim().replace(/\xa0/g,' ')
     MessageActions.sendMessage txt,audi
     @$message.text('')
