@@ -15,7 +15,7 @@ Message         = require './MessageComponent.coffee'
 # XX rems
 INFINITE = yes
 MESSAGE_HEIGHT_FIRST = 54
-MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 36
+MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 16
 MESSAGE_HEIGHT_SAME  = 27
 
 module.exports = recl
