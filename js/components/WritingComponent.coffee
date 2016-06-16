@@ -125,10 +125,11 @@ module.exports = recl
     
     unless @state.audi.length is 0 and $('#audience').text().trim().length > 0
       audi = @state.audi
-    else if @props['audience-lock']?
-      audi = ["~#{window.urb.ship}/#{@props.station}"]
     else 
       audi = @_setAudi() or @state.ludi
+      
+    if @props['audience-lock']?
+      audi = _.union audi, ["~#{window.urb.ship}/#{@props.station}"]
       
     audi = @addCC audi
     
