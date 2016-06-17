@@ -156,7 +156,6 @@ module.exports = recl
     messageHeights = []
     canvas = document.createElement 'canvas'
     context = canvas.getContext '2d'
-    context.font = FONT_SIZE + 'px bau'
     speechLength = $('.grams').width() - (FONT_SIZE * 1.875)
 
     _messages = messages.map (message,index) =>
@@ -165,6 +164,7 @@ module.exports = recl
       lastSaid = nowSaid
       lineNums = 1
       speechArr = []
+      context.font = FONT_SIZE + 'px bau'
       if message.thought.statement.speech.lin?
         speechArr = message.thought.statement.speech.lin.txt.split(/(\s|-)/)
       else if message.thought.statement.speech.url?
@@ -179,7 +179,7 @@ module.exports = recl
           if word == ' '
             ''
           else if word == '-'
-            _.tail(base.split(/\s|-/).reverse()) + word
+            _.head(base.split(/\s|-/).reverse()) + word
           else
             word
         else
