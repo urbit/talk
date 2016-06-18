@@ -17,7 +17,7 @@ Message         = require './MessageComponent.coffee'
 INFINITE = yes
 MESSAGE_HEIGHT_SAME  = 27
 MESSAGE_HEIGHT_FIRST = 56 - MESSAGE_HEIGHT_SAME
-MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 36
+MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 16
 FONT_SIZE = parseInt($('body').css('font-size').match(/(\d*)px/)[1])
 
 module.exports = recl
