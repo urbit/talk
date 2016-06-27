@@ -71,7 +71,6 @@ div.gram.same:hover div.meta {
 
 .speech {
   margin-left: $grid-gutter-width;
-  white-space: nowrap;
 }
 
 .exp {
@@ -79,7 +78,6 @@ div.gram.same:hover div.meta {
   font-size: .9rem;
 
   .speech {
-    white-space: nowrap;
     max-width: 100%;
     overflow-x: scroll;
   }

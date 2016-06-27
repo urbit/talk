@@ -15,10 +15,12 @@ Load            = require './LoadComponent.coffee'
 # Infinite scrolling requires overriding CSS heights. Turn this off to measure
 # the true heights of messages
 # XX rems
+# XX don't hardcode these values
 INFINITE = yes
-MESSAGE_HEIGHT_FIRST = 54
-MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 16
 MESSAGE_HEIGHT_SAME  = 27
+MESSAGE_HEIGHT_FIRST = 56 - MESSAGE_HEIGHT_SAME
+MESSAGE_HEIGHT_FIRST_MARGIN_TOP = 16
+FONT_SIZE = parseInt($('body').css('font-size').match(/(\d*)px/)[1])
 
 module.exports = recl
   displayName: "Messages"
@@ -98,6 +100,9 @@ module.exports = recl
     @focused = true
     $(window).on 'blur', @_blur
     $(window).on 'focus', @_focus
+    $(window).on 'resize', _.debounce(=>
+      @forceUpdate()
+    , 250)
 
 
   componentWillUpdate: (props, state)->
@@ -151,18 +156,44 @@ module.exports = recl
     lastSaid = null
 
     messageHeights = []
+    canvas = document.createElement 'canvas'
+    context = canvas.getContext '2d'
+    speechLength = $('.grams').width() - (FONT_SIZE * 1.875)
 
     _messages = messages.map (message,index) =>
       nowSaid = [message.ship,_.keys(message.thought.audience)]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
+      lineNums = 1
+      speechArr = []
+      context.font = FONT_SIZE + 'px bau'
+      if message.thought.statement.speech.lin?
+        speechArr = message.thought.statement.speech.lin.txt.split(/(\s|-)/)
+      else if message.thought.statement.speech.url?
+        speechArr = message.thought.statement.speech.url.txt.split(/(\s|-)/)
+      else if message.thought.statement.speech.fat?
+        context.font = (FONT_SIZE * 0.9) + 'px scp'
+        speechArr = message.thought.statement.speech.fat.taf.exp.txt.split(/(\s|-)/)
+
+      _.reduce(_.tail(speechArr), (base, word) ->
+        if context.measureText(base + word).width > speechLength
+          lineNums += 1
+          if word == ' '
+            ''
+          else if word == '-'
+            _.head(base.split(/\s|-/).reverse()) + word
+          else
+            word
+        else
+          return base + word
+      , _.head(speechArr))
 
       if INFINITE
         if sameAs
-          height = MESSAGE_HEIGHT_SAME
+          height = MESSAGE_HEIGHT_SAME * lineNums
           marginTop = 0
         else
-          height = MESSAGE_HEIGHT_FIRST
+          height = MESSAGE_HEIGHT_FIRST + (MESSAGE_HEIGHT_SAME * lineNums)
           marginTop = MESSAGE_HEIGHT_FIRST_MARGIN_TOP
       else
         height = null
