@@ -16,6 +16,7 @@ Persistence = _persistence MessageActions: module.exports =
       now.setMilliseconds 0
       new Date (now - 24*3600*1000)
     )
+    Dispatcher.handleViewAction type:"messages-fetch"
     Persistence.listenStation station,date
 
   listeningStation: (station) ->

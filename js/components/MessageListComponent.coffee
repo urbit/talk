@@ -2,6 +2,7 @@ util = require '../util.coffee'
 Infinite = null
 
 recl = React.createClass
+rele = React.createElement
 {div} = React.DOM
 
 MessageActions  = require '../actions/MessageActions.coffee'
@@ -169,7 +170,7 @@ module.exports = recl
       messageHeights.push height+marginTop
 
       {speech} = message.thought.statement
-      React.createElement Message, (_.extend {}, message, {
+      rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
@@ -179,7 +180,7 @@ module.exports = recl
       })
 
     if (not @props.readOnly?) and INFINITE
-      body = React.createElement Infinite, {
+      body = rele Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight
           elementHeight: messageHeights
