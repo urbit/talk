@@ -10,6 +10,7 @@ MessageStore    = require '../stores/MessageStore.coffee'
 StationActions  = require '../actions/StationActions.coffee'
 StationStore    = require '../stores/StationStore.coffee'
 Message         = require './MessageComponent.coffee'
+Load            = require './LoadComponent.coffee'
 
 # Infinite scrolling requires overriding CSS heights. Turn this off to measure
 # the true heights of messages
@@ -188,5 +189,7 @@ module.exports = recl
         }, _messages
     else
       body = _messages
+      
+    fetching = if @state.fetching then (rele Load, {})
 
-    (div {className:"grams", key:"messages"}, body)
+    (div {className:"grams", key:"messages"}, body, fetching)
