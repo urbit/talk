@@ -1,5 +1,5 @@
 recl = React.createClass
-{div,input,textarea} = React.DOM
+{span,div} = React.DOM
 
 module.exports = recl 
   displayName: "Load"
@@ -12,7 +12,6 @@ module.exports = recl
   setAnim: ->
     anim = @state.anim+1
     if anim > 3 then anim = 0
-    @setState {anim:anim}
+    @setState {anim}
 
-  render: -> (div {className:"loading"},
-                (div {className:"spin state-#{@state.anim}"}, ""))
+  render: -> (span {className:"loading state-#{@state.anim}"}, '')
