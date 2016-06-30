@@ -164,11 +164,11 @@ module.exports = recl
       if tindex is -1
         return false
       ptxt = txt.substr(tindex+1)
-      if ptxt.length < 13 and ptxt.match('^[a-z]{1,6}([\\-\\^_][a-z]{0,5})?$')?
+      if ptxt.length < 13 and ptxt.match('^[a-z]{0,6}([\\-\\^_][a-z]{0,5})?$')?
         fname = null
-        for own name, obj of @state.members[@state.ludi[0]]
-          if name.indexOf(ptxt) is 1
-            fname = name.substr(1)
+        for msg in MessageStore.getAll() by -1
+          if msg.ship.indexOf(ptxt) is 0
+            fname = msg.ship
             break
         if fname?
           if fname.length > 13
