@@ -157,6 +157,25 @@ module.exports = recl
           $('#offline').addClass('error').one 'transitionend',
             -> $('#offline').removeClass 'error'
       return false
+    if e.keyCode is 9
+      e.preventDefault()
+      txt = @$message.text()
+      tindex = txt.lastIndexOf("~")
+      if tindex is -1
+        return false
+      ptxt = txt.substr(tindex+1)
+      if ptxt.length < 13 and ptxt.match('^[a-z]{1,6}([\\-\\^_][a-z]{0,5})?$')?
+        fname = null
+        for own name, obj of @state.members[@state.ludi[0]]
+          if name.indexOf(ptxt) is 1
+            fname = name.substr(1)
+            break
+        if fname?
+          if fname.length > 13
+            fname = fname.substr(0, 6) + '_' + fname.substr(-6)
+          @$message.append(fname.substr(ptxt.length))
+          @cursorAtEnd()
+      return false
     @onInput()
     @set()
 
