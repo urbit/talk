@@ -177,12 +177,9 @@ module.exports = recl
       if ptxt.length < 13 and ptxt.match('^[a-z]{0,6}([\\-\\^_][a-z]{0,5})?$')?
         @tabList = []
         for msg in MessageStore.getAll() by -1
-          if msg.ship.indexOf(ptxt) is 0 and @tabList.indexOf(msg.ship) == -1
-            @tabList.push(msg.ship)
+          @_processAutoCompleteName(ptxt, msg.ship)
         for own name, obj of @state.members[@state.ludi[0]]
-          trimname = name.substr(1)
-          if name.indexOf(ptxt) is 1 and @tabList.indexOf(trimname) == -1
-            @tabList.push(trimname)
+          @_processAutoCompleteName(ptxt, name.substr(1))
     if @tabList? and @tabList.length > 0
       if @tabIndex?
         if event.shiftKey
@@ -193,12 +190,16 @@ module.exports = recl
       else
         @tabIndex = 0
       name = @tabList[@tabIndex]
-      if name.length > 27
-        name = name.substr(0, 6) + '_' + name.substr(-6)
-      else if name.length > 13
-        name = name.substr(-13).replace('-', '^')
       @$message.text(@$message.text().substr(0, tindex+1) + name)
       @cursorAtEnd()
+  
+  _processAutoCompleteName: (ptxt, name) ->
+    if name.length is 27
+      name = name.substr(-13).replace('-', '^')
+    else if name.length is 56
+      name = name.substr(0, 6) + '_' + name.substr(-6)
+    if name.indexOf(ptxt) is 0 and @tabList.indexOf(name) == -1
+      @tabList.push(name)
   
   onInput: (e) ->
     text   = @$message.text()
