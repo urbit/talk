@@ -159,26 +159,47 @@ module.exports = recl
       return false
     if e.keyCode is 9
       e.preventDefault()
-      txt = @$message.text()
-      tindex = txt.lastIndexOf("~")
-      if tindex is -1
-        return false
-      ptxt = txt.substr(tindex+1)
-      if ptxt.length < 13 and ptxt.match('^[a-z]{0,6}([\\-\\^_][a-z]{0,5})?$')?
-        fname = null
-        for msg in MessageStore.getAll() by -1
-          if msg.ship.indexOf(ptxt) is 0
-            fname = msg.ship
-            break
-        if fname?
-          if fname.length > 13
-            fname = fname.substr(0, 6) + '_' + fname.substr(-6)
-          @$message.append(fname.substr(ptxt.length))
-          @cursorAtEnd()
+      @_autoComplete()
       return false
+    else if @tabList? and e.keyCode isnt 16
+      @tabList = null
+      @tabIndex = null
     @onInput()
     @set()
-
+  
+  _autoComplete: ->
+    txt = @$message.text()
+    tindex = txt.lastIndexOf('~')
+    if tindex is -1
+      return
+    if not @tabList?
+      ptxt = txt.substr(tindex+1)
+      if ptxt.length < 13 and ptxt.match('^[a-z]{0,6}([\\-\\^_][a-z]{0,5})?$')?
+        @tabList = []
+        for msg in MessageStore.getAll() by -1
+          if msg.ship.indexOf(ptxt) is 0 and @tabList.indexOf(msg.ship) == -1
+            @tabList.push(msg.ship)
+        for own name, obj of @state.members[@state.ludi[0]]
+          trimname = name.substr(1)
+          if name.indexOf(ptxt) is 1 and @tabList.indexOf(trimname) == -1
+            @tabList.push(trimname)
+    if @tabList? and @tabList.length > 0
+      if @tabIndex?
+        if event.shiftKey
+          @tabIndex--
+        else
+          @tabIndex++
+        @tabIndex = (@tabIndex % @tabList.length + @tabList.length) % @tabList.length
+      else
+        @tabIndex = 0
+      name = @tabList[@tabIndex]
+      if name.length > 27
+        name = name.substr(0, 6) + '_' + name.substr(-6)
+      else if name.length > 13
+        name = name.substr(-13).replace('-', '^')
+      @$message.text(@$message.text().substr(0, tindex+1) + name)
+      @cursorAtEnd()
+  
   onInput: (e) ->
     text   = @$message.text()
     length = text.length
