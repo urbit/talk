@@ -18,16 +18,6 @@ module.exports = ({StationActions})->
       console.log 'talk-command'
       console.log arguments
 
-  members: -> window.urb.bind "/a/court", (err,res) ->
-    if err or not res
-      console.log '/a/ err'
-      console.log err
-      return
-    console.log '/a/'
-    console.log res.data
-    if res.data?.group?.global
-      StationActions.loadMembers res.data.group.global
-
   listen: -> window.urb.bind "/", (err,res) ->
     if err or not res.data
       console.log '/ err'
