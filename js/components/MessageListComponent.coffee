@@ -199,14 +199,14 @@ module.exports = recl
         marginTop = null
 
       {speech} = message.thought.statement
+      audience = (_.keys message.thought.audience).join " "
       mez = rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
         ship: if speech?.app then "system" else message.ship
-        glyph: @state.glyph[(_.keys message.thought.audience).join " "]
+        glyph: @state.glyph[audience] || @props['default-glyph']
         unseen: lastIndex and lastIndex is index
-        glyphsLoaded: not _.isEmpty @state.glyph
       })
       mez.computedHeight = height+marginTop
       if sameAs

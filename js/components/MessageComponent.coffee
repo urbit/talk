@@ -100,8 +100,7 @@ module.exports = recl
       marginTop: @props.marginTop
     (div {className, 'data-index':@props.index, key:"message", style},
         (div {className:"meta",key:"meta"},
-          if @props.glyphsLoaded
-            label {className:"type #{type}","data-glyph":(@props.glyph || "*")}
+          label {className:"type #{type}","data-glyph":(@props.glyph || "*")}
           (h2 {className:'author planet',onClick:@_handlePm,key:"member"},
            (React.createElement Member,{ship:@props.ship,glyph:@props.glyph,key:"member"})
           )
