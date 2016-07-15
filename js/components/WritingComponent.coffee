@@ -128,10 +128,15 @@ module.exports = recl
     else 
       audi = @_setAudi() or @state.ludi
       
+    if _.isEmpty audi
+      console.warn "No audience" # XX display to user?
+      return
+
     if @props['audience-lock']?
-      audi = _.union audi, ["~#{window.urb.ship}/#{@props.station}"]
-      
+      audi = _.union audi, ["~#{window.urb.ship}/#{@props.station}"]  
+
     audi = @addCC audi
+    
     
     txt = @$message.text().trim().replace(/\xa0/g,' ')
     MessageActions.sendMessage txt,audi

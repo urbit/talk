@@ -135,7 +135,7 @@ module.exports = recl
   _onChangeStore: -> @setState @stateFromStore()
 
   _handlePm: (user) ->
-    return if @props.chrono is 'reverse'
+    return if @props['audience-lock']?
     audi = [util.mainStationPath(user)]
     if user is window.urb.user then audi.pop()
     StationActions.setAudience audi
