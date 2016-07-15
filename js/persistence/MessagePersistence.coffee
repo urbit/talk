@@ -1,3 +1,5 @@
+util = require '../util.coffee'
+
 window.urb.appl = "talk"
 send = (data,cb)-> window.urb.send data, {mark:"talk-command"}, cb
 
@@ -6,14 +8,15 @@ module.exports = ({MessageActions}) ->
     console.log 'listen station'
     console.log arguments
     $this = this
-    window.urb.bind "/f/#{station}/#{since}", (err,res) ->
+    path = (util.talkPath {'f_grams'}, station, since)
+    window.urb.bind path, (err,res) ->
         if err or not res.data
-          console.log '/f/ err!'
+          console.log path, 'err!'
           console.log err
           console.log res
           $this.listenStation station,since
           return
-        console.log('/f/')
+        console.log(path)
         console.log(res.data)
         if res.data.ok is true
           MessageActions.listeningStation station
@@ -24,17 +27,18 @@ module.exports = ({MessageActions}) ->
   get: (station,start,end) ->
     end   = window.urb.util.numDot end
     start = window.urb.util.numDot start
-    window.urb.bind "/f/#{station}/#{end}/#{start}", (err,res) ->
+    path = (util.talkPath {'f_grams'}, station, end, start)
+    window.urb.bind path, (err,res) ->
       if err or not res.data
-        console.log '/f/ /e/s err'
+        console.log path, '/e/s err'
         console.log err
         return
-      console.log '/f/ /e/s'
+      console.log path, '/e/s'
       console.log res        
       if res.data?.grams?.tele
         {tele,num} = res.data?.grams
         MessageActions.loadMessages tele,num,true
-        window.urb.drop "/f/#{station}/#{end}/#{start}", (err,res) ->
+        window.urb.drop path, (err,res) ->
           console.log 'done'
           console.log res
 
