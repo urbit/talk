@@ -81,9 +81,7 @@ module.exports = recl
     station = @state.station
     _.sortBy messages, (message) =>
           message.pending = message.thought.audience[station]
-          if @props.chrono is "reverse"
-            -message.key
-          else message.key
+          message.key
           #message.thought.statement.date
 
   componentWillMount: -> Infinite = window.Infinite # require 'react-infinite'
@@ -160,7 +158,7 @@ module.exports = recl
     context = canvas.getContext '2d'
     speechLength = $('.grams').width() - (FONT_SIZE * 1.875)
 
-    _messages = []
+    _messageGroups = [[]]
     for message,index in messages
       nowSaid = [message.ship,_.keys(message.thought.audience)]
       sameAs = _.isEqual lastSaid, nowSaid
@@ -190,11 +188,11 @@ module.exports = recl
       , _.head(speechArr))
 
       if INFINITE
+        height = MESSAGE_HEIGHT_SAME * lineNums
         if sameAs
-          height = MESSAGE_HEIGHT_SAME * lineNums
           marginTop = 0
         else
-          height = MESSAGE_HEIGHT_FIRST + (MESSAGE_HEIGHT_SAME * lineNums)
+          height += MESSAGE_HEIGHT_FIRST
           marginTop = MESSAGE_HEIGHT_FIRST_MARGIN_TOP
       else
         height = null
@@ -211,8 +209,16 @@ module.exports = recl
         glyphsLoaded: not _.isEmpty @state.glyph
       })
       mez.computedHeight = height+marginTop
-      _messages.push mez
+      if sameAs
+        _messageGroups[0].push mez
+      else
+        _messageGroups.unshift [mez]
 
+    if @props.chrono isnt "reverse"
+      _messageGroups = _messageGroups.reverse()
+      
+    _messages = _.flatten _messageGroups
+    
     if (not @props.readOnly?) and INFINITE
       body = rele Infinite, {
           useWindowAsScrollContainer: true
