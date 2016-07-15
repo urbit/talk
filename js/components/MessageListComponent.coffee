@@ -160,7 +160,8 @@ module.exports = recl
     context = canvas.getContext '2d'
     speechLength = $('.grams').width() - (FONT_SIZE * 1.875)
 
-    _messages = messages.map (message,index) =>
+    _messages = []
+    for message,index in messages
       nowSaid = [message.ship,_.keys(message.thought.audience)]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
@@ -199,10 +200,8 @@ module.exports = recl
         height = null
         marginTop = null
 
-      messageHeights.push height+marginTop
-
       {speech} = message.thought.statement
-      rele Message, (_.extend {}, message, {
+      mez = rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
@@ -211,12 +210,14 @@ module.exports = recl
         unseen: lastIndex and lastIndex is index
         glyphsLoaded: not _.isEmpty @state.glyph
       })
+      mez.computedHeight = height+marginTop
+      _messages.push mez
 
     if (not @props.readOnly?) and INFINITE
       body = rele Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight
-          elementHeight: messageHeights
+          elementHeight: _.map(_messages, 'computedHeight')
           key:"messages-infinite"
         }, _messages
     else
