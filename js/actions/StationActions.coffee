@@ -24,7 +24,7 @@ Persistence = _persistence StationActions: module.exports =
   listen:    () -> Persistence.listen()
   ping: (_ping) -> Persistence.ping _ping
   removeStation: (station) -> Persistence.removeStation station
-  listenStation: (station) -> Persistence.listenStation station
+  listenStation: (station) -> Persistence.listenStation station, {'group','glyph','cabal'}
   createStation:    (name) -> Persistence.createStation name
   
   setSources: (station,sources) ->

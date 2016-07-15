@@ -30,8 +30,9 @@ module.exports = ({StationActions})->
     if house
       StationActions.loadStations res.data.house
 
-  listenStation: (station) ->
-    path = (util.talkPath {'a_group','v_glyph','x_cabal'}, station)
+  listenStation: (station,{group,glyph,cabal}) ->
+    return unless group or glyph or cabal
+    path = (util.talkPath {a_group:group,v_glyph:glyph,x_cabal:cabal}, station)
     window.urb.bind path, (err,res) ->
       if err or not res
         console.log path, 'err'
