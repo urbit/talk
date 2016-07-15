@@ -38,7 +38,7 @@ TreeActions.registerComponent "talk", React.createClass
 
     station = @getStation()
     StationActions.listen()
-    StationActions.listenStation station
+    # StationActions.listenStation station
     StationActions.switchStation station
 
   render: ->

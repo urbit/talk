@@ -209,6 +209,7 @@ module.exports = recl
         ship: if speech?.app then "system" else message.ship
         glyph: @state.glyph[(_.keys message.thought.audience).join " "]
         unseen: lastIndex and lastIndex is index
+        glyphsLoaded: not _.isEmpty @state.glyph
       })
 
     if (not @props.readOnly?) and INFINITE
