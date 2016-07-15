@@ -71,7 +71,7 @@ Persistence = _persistence MessageActions: module.exports =
 
     for speech in speeches
       message =
-        ship:window.urb.ship
+        ship:window.urb.user
         thought:
           serial:util.uuid32()
           audience:_audi
