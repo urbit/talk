@@ -3,7 +3,8 @@ util = require '../util.coffee'
 window.urb.appl = "talk"
 send = (data,cb)-> window.urb.send data, {mark:"talk-command"}, cb
 design = (party,config,cb)-> send {design:{party,config}}, cb
-  
+
+subscribed = {}
 module.exports = ({StationActions})->
   createStation: (name,cb) ->
     design name, {
@@ -31,8 +32,14 @@ module.exports = ({StationActions})->
       StationActions.loadStations res.data.house
 
   listenStation: (station,{group,glyph,cabal}) ->
-    return unless group or glyph or cabal
-    path = (util.talkPath {a_group:group,v_glyph:glyph,x_cabal:cabal}, station)
+    subscribed[station] ?= {}
+    types = {a_group:group,v_glyph:glyph,x_cabal:cabal}
+    for k of types
+      if subscribed[station][k]
+        delete types[k]
+      else subscribed[station][k] = types[k]
+    return if _.isEmpty types
+    path = (util.talkPath types, station)
     window.urb.bind path, (err,res) ->
       if err or not res
         console.log path, 'err'
