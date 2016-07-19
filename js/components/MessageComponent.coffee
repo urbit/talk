@@ -26,6 +26,7 @@ module.exports = recl
   _handlePm: (e) ->
     return if not @props._handlePm
     user = $(e.target).closest('.iden').text()
+    if user[0] is "~" then user = user.slice 1
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 

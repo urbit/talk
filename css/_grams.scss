@@ -10,6 +10,7 @@
 .grams .meta {
   max-height: 1.6rem;
   overflow: hidden;
+  width: 100%;
 
   label {
     margin-right: $grid-gutter-width/2;
@@ -32,6 +33,7 @@
   h2,
   h3 {
     display: inline-block;
+    vertical-align: top;
   }
 
   h2,
@@ -47,12 +49,14 @@
     margin-left: 2rem;
     line-height: 1rem;
   }
-  .time { padding-right: 2rem; }
+  .time {
+    padding-right: 2rem;
+    float: right;
+  }
 }
 
-div.gram.same .meta {
-  max-height: none;
-  overflow: auto;
+.grams .meta:hover {
+  overflow: visible;
 }
 
 div.gram.first:first-of-type { margin-top: 0; }
@@ -62,13 +66,19 @@ div.gram.same div.meta { display: none; }
 div.gram.same:hover div.meta {
   display: block;
   position: absolute;
-  background-color: #fff;
-  margin-top: -2.5rem;
-  padding-top: 1rem;
-  white-space: nowrap;
+  z-index: 0;
+
+  label,h2,h3 { display:none; }
+  h3.time {
+    display:block;
+    opacity: .6;
+    padding-right: 3.8rem;
+  }
 }
 
 .speech {
+  position: absolute;
+  z-index: 1;
   margin-left: $grid-gutter-width;
 }
 
@@ -132,7 +142,7 @@ div.gram.same:hover div.meta {
 
 .gram pre { background-color: transparent; }
 
-div.gram label { background-color: $blue; }
+div.gram label { background-color: #000; }
 div.gram.say .speech { font-style: italic; }
 div.gram.pending .speech { color: $gray-light; }
 
