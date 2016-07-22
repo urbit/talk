@@ -238,9 +238,20 @@ module.exports = recl
     v = v.trim()
     if v.length is 0 
       return true
-    if v.length < 5 # zod/a is shortest
+    if v.length is 1
+      v = @_expandAudiGlyph(v)
+    if not (v[0] is "~")
+      v = "~"+v
+    $('#audience .input').text(v) # Bugged, doesn't include leading ~.
+    if v.length < 6 # ~zod/a is shortest
       return false
     _.all (v.split /\ +/), @_validateAudiPart
+
+  _expandAudiGlyph: (g) ->
+    glyphs = StationStore.getGlyphs()
+    if glyphs[g]
+      return glyphs[g][0][0]
+    return g
 
   _setAudi: ->
     valid = @_validateAudi()
