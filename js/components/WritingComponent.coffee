@@ -63,6 +63,38 @@ Audience = recl
       if @props.validate()
         setTimeout (-> $('.writing').focus()),0
         return false
+    if e.keyCode is 9
+      # Ideally we'd want to do this, but we can't because of scope:
+      # if (not @tabAudList?) and _validateAudi()
+      #  return true
+      e.preventDefault()
+      @_autoCompleteAudience()
+      return false
+    else if @tabAudList? and e.keyCode isnt 16
+      @tabAudList = null
+      @tabAudIndex = null
+
+  _autoCompleteAudience: ->
+    txt = $('#audience .input').text().trim()
+    if not (txt[0] is '~')
+      txt = '~'+txt
+    if not @tabAudList?
+      @tabAudList = []
+      for g,stations of StationStore.getGlyphs()
+        for aud in stations
+          if aud[0].indexOf(txt) is 0
+            @tabAudList.push(aud[0])
+    if @tabAudList? and @tabAudList.length > 0
+      if @tabAudIndex?
+        if event.shiftKey
+          @tabAudIndex--
+        else
+          @tabAudIndex++
+        @tabAudIndex = (@tabAudIndex % @tabAudList.length + @tabAudList.length) % @tabAudList.length
+      else
+        @tabAudIndex = 0
+      $('#audience .input').text(@tabAudList[@tabAudIndex])
+
   render: ->
     div {className:'audience',id:'audience',key:'audience'}, (div {
           className:"input valid-#{@props.valid}"
