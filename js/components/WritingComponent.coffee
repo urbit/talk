@@ -76,14 +76,18 @@ Audience = recl
 
   _autoCompleteAudience: ->
     txt = $('#audience .input').text().trim()
-    if not (txt[0] is '~')
-      txt = '~'+txt
     if not @tabAudList?
       @tabAudList = []
-      for g,stations of StationStore.getGlyphs()
-        for aud in stations
-          if aud[0].indexOf(txt) is 0
-            @tabAudList.push(aud[0])
+      if txt.length is 1 and StationStore.getGlyphs()[txt[0]]
+        for s in @_getGlyphExpansions(txt[0])
+          @tabAudList.push(s[0])
+      else
+        if not (txt[0] is '~')
+          txt = '~'+txt
+        for g,stations of StationStore.getGlyphs()
+          for aud in stations
+            if aud[0].indexOf(txt) is 0 and @tabAudList.indexOf(aud[0]) < 0
+              @tabAudList.push(aud[0])
     if @tabAudList? and @tabAudList.length > 0
       if @tabAudIndex?
         if event.shiftKey
@@ -93,7 +97,12 @@ Audience = recl
         @tabAudIndex = (@tabAudIndex % @tabAudList.length + @tabAudList.length) % @tabAudList.length
       else
         @tabAudIndex = 0
-      $('#audience .input').text(@tabAudList[@tabAudIndex])
+      StationActions.setAudience(@tabAudList[@tabAudIndex].split /\ +/)
+
+  _getGlyphExpansions: (g) ->
+    glyphs = StationStore.getGlyphs()
+    if glyphs[g]
+      return glyphs[g]
 
   render: ->
     div {className:'audience',id:'audience',key:'audience'}, (div {
@@ -270,20 +279,9 @@ module.exports = recl
     v = v.trim()
     if v.length is 0 
       return true
-    if v.length is 1
-      v = @_expandAudiGlyph(v)
-    if not (v[0] is "~")
-      v = "~"+v
-    $('#audience .input').text(v) # Bugged, doesn't include leading ~.
-    if v.length < 6 # ~zod/a is shortest
+    if v.length < 5 # zod/a is shortest
       return false
     _.all (v.split /\ +/), @_validateAudiPart
-
-  _expandAudiGlyph: (g) ->
-    glyphs = StationStore.getGlyphs()
-    if glyphs[g]
-      return glyphs[g][0][0]
-    return g
 
   _setAudi: ->
     valid = @_validateAudi()
