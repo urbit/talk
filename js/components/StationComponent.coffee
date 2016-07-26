@@ -113,7 +113,7 @@ module.exports = recl
             (div {
               className:(if @state.open is source then "selected" else "")
               onClick:@_openStation
-              "data-station":source}, source.slice(1))
+              "data-station":source}, source)
             (div {
               className:"close"
               onClick:@_remove

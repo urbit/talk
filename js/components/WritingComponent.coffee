@@ -339,7 +339,8 @@ module.exports = recl
     audi = if @state.audi.length is 0 then @state.ludi else @state.audi
     audi = util.clipAudi audi
     for k,v of audi
-      audi[k] = v.slice(1)
+      if audi[k].indexOf('~~') is 0
+        audi[k] = v.slice(1)
 
     div {className:'writing',key:'writing'},
       (React.createElement Audience, {
