@@ -59,6 +59,11 @@
   overflow: visible;
 }
 
+.gram:hover {
+  z-index: 2;
+  position: relative;
+}
+
 div.gram.first:first-of-type { margin-top: 0; }
 div.gram.first { margin-top: $grid-gutter-width; }
 div.gram.same div.meta { display: none; }
