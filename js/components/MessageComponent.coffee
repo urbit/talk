@@ -74,7 +74,7 @@ module.exports = recl
 
     name = if @props.name then @props.name else ""
     aude = _.keys thought.audience
-    audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi.slice(1))
+    audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi)
 
     mainStation = util.mainStationPath(window.urb.user)
     type = if mainStation in aude then 'private' else 'public'

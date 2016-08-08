@@ -76,6 +76,8 @@ StationStore = _.merge new EventEmitter,{
       for aud in auds
         _shpylg[aud.join " "] = char
 
+  getGlyphs: -> _glyphs
+
   getStations: -> _stations
 
   setStation: (station) -> _station = station

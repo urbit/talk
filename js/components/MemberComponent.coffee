@@ -6,8 +6,7 @@ rele   = React.createElement
 module.exports = recl
   displayName:"Member"
   render: ->
-    ship = @props.ship ? ""
-    if ship[0] is "~" then @props.ship = ship.slice(1)
+    ship = @props.ship
 
     k = "ship"
     k+= " #{@props.presence}" if @props.presence

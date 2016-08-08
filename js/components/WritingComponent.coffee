@@ -63,6 +63,47 @@ Audience = recl
       if @props.validate()
         setTimeout (-> $('.writing').focus()),0
         return false
+    if e.keyCode is 9
+      # Ideally we'd want to do this, but we can't because of scope:
+      # if (not @tabAudList?) and _validateAudi()
+      #  return true
+      e.preventDefault()
+      @_autoCompleteAudience()
+      return false
+    else if @tabAudList? and e.keyCode isnt 16
+      @tabAudList = null
+      @tabAudIndex = null
+
+  _autoCompleteAudience: ->
+    txt = $('#audience .input').text().trim()
+    if not @tabAudList?
+      @tabAudList = []
+      if txt.length is 1 and StationStore.getGlyphs()[txt[0]]
+        for s in @_getGlyphExpansions(txt[0])
+          @tabAudList.push(s[0])
+      else
+        if not (txt[0] is '~')
+          txt = '~'+txt
+        for g,stations of StationStore.getGlyphs()
+          for aud in stations
+            if aud[0].indexOf(txt) is 0 and @tabAudList.indexOf(aud[0]) < 0
+              @tabAudList.push(aud[0])
+    if @tabAudList? and @tabAudList.length > 0
+      if @tabAudIndex?
+        if event.shiftKey
+          @tabAudIndex--
+        else
+          @tabAudIndex++
+        @tabAudIndex = (@tabAudIndex % @tabAudList.length + @tabAudList.length) % @tabAudList.length
+      else
+        @tabAudIndex = 0
+      StationActions.setAudience(@tabAudList[@tabAudIndex].split /\ +/)
+
+  _getGlyphExpansions: (g) ->
+    glyphs = StationStore.getGlyphs()
+    if glyphs[g]
+      return glyphs[g]
+
   render: ->
     div {className:'audience',id:'audience',key:'audience'}, (div {
           className:"input valid-#{@props.valid}"
@@ -303,7 +344,8 @@ module.exports = recl
     audi = if @state.audi.length is 0 then @state.ludi else @state.audi
     audi = util.clipAudi audi
     for k,v of audi
-      audi[k] = v.slice(1)
+      if audi[k].indexOf('~~') is 0
+        audi[k] = v.slice(1)
 
     div {className:'writing',key:'writing'},
       (React.createElement Audience, {
