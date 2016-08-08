@@ -6,7 +6,7 @@ rele   = React.createElement
 module.exports = recl
   displayName:"Member"
   render: ->
-    ship = @props.ship
+    ship = @props.ship ? ""
 
     k = "ship"
     k+= " #{@props.presence}" if @props.presence
