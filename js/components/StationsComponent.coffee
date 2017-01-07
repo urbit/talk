@@ -18,7 +18,7 @@ module.exports = recl
     @$add = $ '#stations .add'
     @$input = @$el.find 'input'
     StationStore.addChangeListener @_onChangeStore
-      
+
   componentWillUnmount: ->
     StationStore.removeChangeListener @_onChangeStore
 
@@ -51,7 +51,8 @@ module.exports = recl
       k = "station"
       parts = [(div {className:"name"}, _station.name)]
       if _station.name isnt util.mainStation()
-        parts.push (div {className:"remove",onClick:_remove,dataStation:_station.name},"×")
+        onClick = _remove; dataStation = _station.name
+        parts.push (div {className:"remove",onClick,dataStation},"×")
       div {className:k,onClick:_click},parts
 
     div {id:"stations"}, [

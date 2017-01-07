@@ -58,7 +58,7 @@ textToHTML = (txt)-> __html: $('<div>').text(txt).html()
 Audience = recl
   displayName: "Audience"
   onKeyDown: (e) ->
-    if e.keyCode is 13 
+    if e.keyCode is 13
       e.preventDefault()
       if @props.validate()
         setTimeout (-> $('.writing').focus()),0
@@ -94,7 +94,8 @@ Audience = recl
           @tabAudIndex--
         else
           @tabAudIndex++
-        @tabAudIndex = (@tabAudIndex % @tabAudList.length + @tabAudList.length) % @tabAudList.length
+        modulo = (a,b)-> ((a % b) + a) % b # handle negative index
+        @tabAudIndex = modulo @tabAudIndex, @tabAudList.length
       else
         @tabAudIndex = 0
       StationActions.setAudience(@tabAudList[@tabAudIndex].split /\ +/)
@@ -117,12 +118,13 @@ Audience = recl
 module.exports = recl
   displayName: "Writing"
   set: ->
-    if window.localStorage and @$message then window.localStorage.setItem 'writing', @$message.text()
+    if window.localStorage and @$message
+      window.localStorage.setItem 'writing', @$message.text()
 
   get: ->
     if window.localStorage then window.localStorage.getItem 'writing'
 
-  stateFromStore: -> 
+  stateFromStore: ->
     s =
       audi:StationStore.getAudience()
       ludi:MessageStore.getLastAudience()
@@ -141,12 +143,12 @@ module.exports = recl
     if @state.typing[@state.station] isnt state
       StationActions.setTyping @state.station,state
 
-  onBlur: -> 
+  onBlur: ->
     @$message.text @$message.text()
     MessageActions.setTyping false
     @typing false
 
-  onFocus: -> 
+  onFocus: ->
     MessageActions.setTyping true
     @typing true
     @cursorAtEnd
@@ -163,22 +165,22 @@ module.exports = recl
     if @_validateAudi() is false
       setTimeout (-> $('#audience .input').focus()), 0
       return
-    
+
     unless @state.audi.length is 0 and $('#audience').text().trim().length > 0
       audi = @state.audi
-    else 
+    else
       audi = @_setAudi() or @state.ludi
-      
+
     if _.isEmpty audi
       console.warn "No audience" # XX display to user?
       return
 
     if @props['audience-lock']?
-      audi = _.union audi, ["~#{window.urb.ship}/#{@props.station}"]  
+      audi = _.union audi, ["~#{window.urb.ship}/#{@props.station}"]
 
     audi = @addCC audi
-    
-    
+
+
     txt = @$message.text().trim().replace(/\xa0/g,' ')
     MessageActions.sendMessage txt,audi
     @$message.text('')
@@ -189,7 +191,7 @@ module.exports = recl
   onKeyUp: (e) ->
     if not window.urb.util.isURL @$message.text()
       @setState lengthy: (@$message.text().length > 62)
-  
+
   onKeyDown: (e) ->
     if e.keyCode is 13
       txt = @$message.text()
@@ -199,7 +201,7 @@ module.exports = recl
           @sendMessage()
         else
           #@errHue = ((@errHue || 0) + (Math.random() * 300) + 30) % 360
-          #$('#offline').css color: husl.toHex @errHue, 90, 50 
+          #$('#offline').css color: husl.toHex @errHue, 90, 50
           $('#offline').addClass('error').one 'transitionend',
             -> $('#offline').removeClass 'error'
       return false
@@ -212,7 +214,7 @@ module.exports = recl
       @tabIndex = null
     @onInput()
     @set()
-  
+
   _autoComplete: ->
     txt = @$message.text()
     tindex = txt.lastIndexOf('~')
@@ -232,13 +234,14 @@ module.exports = recl
           @tabIndex--
         else
           @tabIndex++
-        @tabIndex = (@tabIndex % @tabList.length + @tabList.length) % @tabList.length
+        modulo = (a,b)-> ((a % b) + a) % b # handle negative index
+        @tabIndex = modulo @tabIndex, @tabList.length
       else
         @tabIndex = 0
       name = @tabList[@tabIndex]
       @$message.text(@$message.text().substr(0, tindex+1) + name)
       @cursorAtEnd()
-  
+
   _processAutoCompleteName: (ptxt, name) ->
     if name.length is 27
       name = name.substr(-13).replace('-', '^')
@@ -246,7 +249,7 @@ module.exports = recl
       name = name.substr(0, 6) + '_' + name.substr(-6)
     if name.indexOf(ptxt) is 0 and @tabList.indexOf(name) == -1
       @tabList.push(name)
-  
+
   onInput: (e) ->
     text   = @$message.text()
     length = text.length
@@ -275,14 +278,14 @@ module.exports = recl
       ship = _a[0]
     else
       ship = a
-     
-    return (SHIPSHAPE.test ship) and 
+
+    return (SHIPSHAPE.test ship) and
       _.all (ship.match /[a-z]{3}/g), (a)-> -1 isnt PO.indexOf a
 
   _validateAudi: ->
     v = $('#audience .input').text()
     v = v.trim()
-    if v.length is 0 
+    if v.length is 0
       return true
     if v.length < 5 # zod/a is shortest
       return false
@@ -322,7 +325,7 @@ module.exports = recl
     @$el = $ ReactDOM.findDOMNode @
     @$message = $('#message .input')
     @$message.focus()
-    if @get() 
+    if @get()
       @$message.text @get()
       @onInput()
     @interval = setInterval =>
@@ -354,7 +357,7 @@ module.exports = recl
         validate:@_validateAudi
         editable: not @props['audience-lock']?
         onBlur:@_setAudi })
-      (div {className:'message',id:'message',key:'message'}, 
+      (div {className:'message',id:'message',key:'message'},
         (div {
           className:'input'
           contentEditable:true
@@ -363,4 +366,6 @@ module.exports = recl
           dangerouslySetInnerHTML: __html: ""
         })
       )
-      (div {className:'length',key:'length'}, "#{@state.length}/64 (#{Math.ceil @state.length / 64})")
+      (div {className:'length',key:'length'},
+         "#{@state.length}/64 (#{Math.ceil @state.length / 64})"
+      )

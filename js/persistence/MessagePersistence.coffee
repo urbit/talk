@@ -34,7 +34,7 @@ module.exports = ({MessageActions}) ->
         console.log err
         return
       console.log path, '/e/s'
-      console.log res        
+      console.log res
       if res.data?.grams?.tele
         {tele,num} = res.data?.grams
         MessageActions.loadMessages tele,num,true

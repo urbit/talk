@@ -1,7 +1,7 @@
 util = require '../util.coffee'
 clas = require 'classnames'
 
-recl = React.createClass
+recl = React.createClass; rele = React.createElement
 {div,pre,a,label,h2,h3} = React.DOM
 
 Member          = require './MemberComponent.coffee'
@@ -70,7 +70,7 @@ module.exports = recl
     delivery = _.uniq _.pluck thought.audience, "delivery"
     speech = thought.statement.speech
     bouquet = thought.statement.bouquet
-    if !speech? then return;
+    if !speech? then return null
 
     name = if @props.name then @props.name else ""
     aude = _.keys thought.audience
@@ -91,7 +91,7 @@ module.exports = recl
 
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
-      (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
+      (if ("received" in delivery) then "received" else "pending"),
       {'new': @props.unseen}
       {comment}
       @classesInSpeech speech
@@ -99,11 +99,13 @@ module.exports = recl
     style =
       height: @props.height
       marginTop: @props.marginTop
+
+    glyph = @props.glyph || "*"
     (div {className, 'data-index':@props.index, key:"message", style},
         (div {className:"meta",key:"meta"},
-          label {className:"type #{type}","data-glyph":(@props.glyph || "*")}
+          label {className:"type #{type}","data-glyph":glyph}
           (h2 {className:'author planet',onClick:@_handlePm,key:"member"},
-           (React.createElement Member,{ship:@props.ship,glyph:@props.glyph,key:"member"})
+           (rele Member,{ship:@props.ship,glyph:@props.glyph,key:"member"})
           )
           h3 {className:"path",onClick:@_handleAudi,key:"audi"}, audi
           h3 {className:"time",key:"time"}, @convTime thought.statement.date

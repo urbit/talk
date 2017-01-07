@@ -25,9 +25,10 @@ MessageStore = _.merge new EventEmitter,{
     time = time.substr(1).split(".")
     time[1] = @leadingZero time[1]
     time[2] = @leadingZero time[2]
-    d = new moment "#{time[0]}-#{time[1]}-#{time[2]}T#{time[4]}:#{time[5]}:#{time[6]}Z"
-    d.tz "Europe/London"
-    d
+    t = time
+    date = new moment "#{t[0]}-#{t[1]}-#{t[2]}T#{t[4]}:#{t[5]}:#{t[6]}Z"
+    date.tz "Europe/London"
+    date
 
   getListening: -> _listening
 
@@ -35,12 +36,12 @@ MessageStore = _.merge new EventEmitter,{
 
   getLastAudience: ->
     if _.keys(_messages).length is 0 then return []
-    messages = _.sortBy _messages, (_message) -> _message.thought.statement.time
+    messages = _.sortBy _messages, ({thought:{statement:{time}}}) -> time
     _.keys messages[messages.length-1].thought.audience
 
   setTyping: (state) -> _typing = state
 
-  setListening: (station) -> 
+  setListening: (station) ->
     if _listening.indexOf(station) isnt -1
       console.log 'already listening on that station (somehow).'
     else
@@ -74,7 +75,7 @@ MessageStore.setMaxListeners 100
 
 MessageStore.dispatchToken = MessageDispatcher.register (payload) ->
   action = payload.action
-  
+
   switch action.type
     when 'station-switch'
       MessageStore.setStation action.station

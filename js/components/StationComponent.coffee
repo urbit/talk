@@ -34,7 +34,7 @@ module.exports = recl
     StationStore.removeChangeListener @_onChangeStore
   _onChangeStore: -> @setState @stateFromStore()
   componentWillReceiveProps: (nextProps) ->
-    if @props.open is true and nextProps.open is false then @setState {open:null}
+    if @props.open and nextProps.open is false then @setState {open:null}
 
   validateSource: (s) ->
     {sources} = @state.configs[@state.station]

@@ -1,10 +1,10 @@
 recl = React.createClass
 {span,div} = React.DOM
 
-module.exports = recl 
+module.exports = recl
   displayName: "Load"
   getInitialState: -> {anim: 0}
-  
+
   componentDidMount: -> @interval = setInterval @setAnim, 100
 
   componentWillUnmount: -> clearInterval @interval

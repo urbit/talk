@@ -79,10 +79,10 @@ module.exports = recl
 
   sortedMessages: (messages) ->
     station = @state.station
-    _.sortBy messages, (message) =>
-          message.pending = message.thought.audience[station]
-          message.key
-          #message.thought.statement.date
+    _.sortBy messages, (message) ->
+      message.pending = message.thought.audience[station]
+      message.key
+      #message.thought.statement.date
 
   componentWillMount: -> Infinite = window.Infinite # require 'react-infinite'
 
@@ -104,7 +104,8 @@ module.exports = recl
 
 
   componentWillUpdate: (props, state)->
-    @scrollBottom = $(document).height() - ($(window).scrollTop() + window.innerHeight)
+    @scrollBottom =
+      $(document).height() - ($(window).scrollTop() + window.innerHeight)
 
 
   componentDidUpdate: (_props, _state)->
@@ -112,7 +113,9 @@ module.exports = recl
     _oldMessages = @sortedMessages _state.messages
     # a message with no key is pending
     # XX should be message.pending: true
-    appendedToBottom = !_.last(_messages)?.key? or _.last(_messages)?.key > _.last(_oldMessages)?.key
+    appendedToBottom =
+      !_.last(_messages)?.key? or
+      _.last(_messages)?.key > _.last(_oldMessages)?.key
     setOffset = $(document).height() - window.innerHeight - @scrollBottom
     if @props.chrono isnt "reverse"
       unless @scrollBottom > 0 and appendedToBottom
@@ -164,15 +167,16 @@ module.exports = recl
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
       lineNums = 1
-      speechArr = []
-      context.font = FONT_SIZE + 'px bau'
-      if message.thought.statement.speech.lin?
-        speechArr = message.thought.statement.speech.lin.txt.split(/(\s|-)/)
-      else if message.thought.statement.speech.url?
-        speechArr = message.thought.statement.speech.url.txt.split(/(\s|-)/)
-      else if message.thought.statement.speech.fat?
-        context.font = (FONT_SIZE * 0.9) + 'px scp'
-        speechArr = message.thought.statement.speech.fat.taf.exp.txt.split(/(\s|-)/)
+      {speech} = message.thought.statement
+
+      context.font =
+        if !speech.fat? then (FONT_SIZE * 0.9) + 'px scp'
+        else FONT_SIZE + 'px bau'
+      speechArr = switch
+        when speech.lin? then speechArr = speech.lin.txt.split(/(\s|-)/)
+        when speech.url? then speechArr = speech.url.txt.split(/(\s|-)/)
+        when speech.fat? then speech.fat.taf.exp.txt.split(/(\s|-)/)
+        else []
 
       _.reduce(_.tail(speechArr), (base, word) ->
         if context.measureText(base + word).width > speechLength
@@ -198,7 +202,6 @@ module.exports = recl
         height = null
         marginTop = null
 
-      {speech} = message.thought.statement
       audience = (_.keys message.thought.audience).join " "
       mez = rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
@@ -216,9 +219,9 @@ module.exports = recl
 
     if @props.chrono isnt "reverse"
       _messageGroups = _messageGroups.reverse()
-      
+
     _messages = _.flatten _messageGroups
-    
+
     if (not @props.readOnly?) and INFINITE
       body = rele Infinite, {
           useWindowAsScrollContainer: true
@@ -228,7 +231,7 @@ module.exports = recl
         }, _messages
     else
       body = _messages
-      
+
     fetching = if @state.fetching then (rele Load, {})
 
     (div {className:"grams", key:"messages"}, body, fetching)

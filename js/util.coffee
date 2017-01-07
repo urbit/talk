@@ -2,7 +2,7 @@ module.exports = util =
   defaultStation: ->
     if document.location.search
       station = document.location.search.replace /^\?/,''
-      if station.indexOf('dbg.nopack') isnt -1 then station = util.mainStation()
+      if station.indexOf('dbg.') isnt -1 then station = util.mainStation()
     else util.mainStation()
 
   mainStations: ["court","floor","porch"]
@@ -40,7 +40,9 @@ module.exports = util =
     window.talk.StationPersistence.createStation name, (err,res) ->
 
   subscribe: (name) ->
-    window.talk.StationPersistence.addSource "main",window.urb.ship,["~zod/#{name}"]
+    window.talk.StationPersistence.addSource "main",
+                                             window.urb.ship,
+                                             ["~zod/#{name}"]
 
   uuid32: ->
     str = "0v"
