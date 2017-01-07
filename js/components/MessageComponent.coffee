@@ -30,6 +30,7 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
+  abbreviate: (s)-> if s.length <= 80 then s else (s.slice 0,77) + "..."
   renderSpeech: ({lin,app,exp,tax,url,mor,fat,comment,post}) ->  # one of
     switch
       when (lin or app or exp or tax)
@@ -38,8 +39,7 @@ module.exports = recl
         (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
       when comment
         (div {},
-          comment.txt
-          (div {}, (a {className:"btn", href: comment.url}, "Go to thread"))
+          (a {href:comment.url}, @abbreviate comment.txt)
         )
       when post
         (div {},
