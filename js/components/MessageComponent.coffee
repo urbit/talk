@@ -30,16 +30,20 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
-  renderSpeech: ({lin,app,exp,tax,url,mor,fat,com}) ->  # one of
+  renderSpeech: ({lin,app,exp,tax,url,mor,fat,comment,post}) ->  # one of
     switch
       when (lin or app or exp or tax)
         (lin or app or exp or tax).txt
       when url
         (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
-      when com
+      when comment
         (div {},
-          com.txt
-          (div {}, (a {className:"btn", href: com.url}, "Go to thread"))
+          comment.txt
+          (div {}, (a {className:"btn", href: comment.url}, "Go to thread"))
+        )
+      when post
+        (div {},
+          (a {href: post.url}, post.title)
         )
       when mor then mor.map @renderSpeech
       when fat
@@ -87,13 +91,23 @@ module.exports = recl
           txt = v.fat.tor.text
         if v.app then path = v.app.txt.replace "comment on ", ""
       audi = (a {href:url}, path)
-      speech = {com:{txt,url}}
+      speech = {comment:{txt,url}}
+
+    if(_.filter(bouquet, ["fora-post"]).length > 0)
+      post = true
+      for k,v of speech.mor
+        if v.fat
+          url = v.fat.taf.url.txt
+          txt = v.fat.tor.text
+        if v.app then title = v.app.txt.replace "forum post: ", ""
+      audi = (a {href:url}, title)
+      speech = {post:{txt,url,title}}
 
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
       (if ("received" in delivery) then "received" else "pending"),
       {'new': @props.unseen}
-      {comment}
+      {comment,post}
       @classesInSpeech speech
 
     style =
