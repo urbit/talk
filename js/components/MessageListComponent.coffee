@@ -159,6 +159,7 @@ module.exports = recl
     speechLength = $('.grams').width() - (FONT_SIZE * 1.875)
 
     _messageGroups = [[]]
+    computedHeights = []
     for message,index in messages
       nowSaid = [message.ship,_.keys(message.thought.audience)]
       sameAs = _.isEqual lastSaid, nowSaid
@@ -208,7 +209,7 @@ module.exports = recl
         glyph: @state.glyph[audience] || @props['default-glyph']
         unseen: lastIndex and lastIndex is index
       })
-      mez.computedHeight = height+marginTop
+      computedHeights.push(height+marginTop)
       if sameAs
         _messageGroups[0].push mez
       else
@@ -216,19 +217,19 @@ module.exports = recl
 
     if @props.chrono isnt "reverse"
       _messageGroups = _messageGroups.reverse()
-      
+
     _messages = _.flatten _messageGroups
-    
+
     if (not @props.readOnly?) and INFINITE
       body = rele Infinite, {
           useWindowAsScrollContainer: true
           containerHeight: window.innerHeight
-          elementHeight: _.map(_messages, 'computedHeight')
+          elementHeight: computedHeights
           key:"messages-infinite"
         }, _messages
     else
       body = _messages
-      
+
     fetching = if @state.fetching then (rele Load, {})
 
     (div {className:"grams", key:"messages"}, body, fetching)

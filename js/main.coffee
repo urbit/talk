@@ -3,7 +3,8 @@ util = require './util.coffee'
 _.merge window, {util, talk:{online:yes}}
 
 StationActions = require './actions/StationActions.coffee'
-TreeActions = window.tree.actions
+Store = window.tree.util.store
+TreeActions = window.tree.util.actions
 
 
 setInterval (->
@@ -27,7 +28,7 @@ WritingComponent    = React.createFactory require './components/WritingComponent
 
 {div,link} = React.DOM
 
-TreeActions.registerComponent "talk", React.createClass
+Talk = React.createClass
   displayName:"talk"
   getStation: -> @props.station or util.defaultStation()
 
@@ -56,4 +57,5 @@ TreeActions.registerComponent "talk", React.createClass
       children = children.reverse()
     (div {key:"talk-container"}, children)
 
-TreeActions.registerComponent "talk-station", StationComponent
+Store.dispatch (TreeActions.registerComponent "talk",Talk)
+Store.dispatch (TreeActions.registerComponent "talk-station",StationComponent)
