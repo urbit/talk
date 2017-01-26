@@ -1,6 +1,6 @@
 util = require '../util.coffee'
 
-window.urb.appl = "talk"
+window.urb.app = "talk"
 send = (data,cb)-> window.urb.send data, {mark:"talk-command"}, cb
 design = (party,config,cb)-> send {design:{party,config}}, cb
 
