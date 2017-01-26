@@ -8,7 +8,7 @@ TreeActions = window.tree.util.actions
 
 
 setInterval (->
-  window.talk.online = window.urb.poll.dely < 500
+  window.talk.online = window.urb.poll.delay < 500
   if window.talk.online
     $('body').removeClass 'offline'
   else $('body').addClass 'offline'
