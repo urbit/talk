@@ -5,6 +5,12 @@ Dispatcher   =  require '../dispatcher/Dispatcher.coffee'
 _persistence = require '../persistence/MessagePersistence.coffee'
 
 Persistence = _persistence MessageActions: module.exports =
+  setFilter: (station) ->
+    Dispatcher.handleViewAction {station,type:"messages-filter"}
+
+  clearFilter: () ->
+    Dispatcher.handleViewAction {type:"messages-filter-clear"}
+
   loadMessages: (messages,last,get) ->
     Dispatcher.handleServerAction {messages,last,get,type:"messages-load"}
 

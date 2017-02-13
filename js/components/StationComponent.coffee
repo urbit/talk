@@ -7,6 +7,7 @@ rele = React.createElement
 
 MessageStore    = require '../stores/MessageStore.coffee'
 StationStore    = require '../stores/StationStore.coffee'
+MessageActions  = require '../actions/MessageActions.coffee'
 StationActions  = require '../actions/StationActions.coffee'
 Member          = require './MemberComponent.coffee'
 Load            = require './LoadComponent.coffee'
@@ -17,6 +18,7 @@ module.exports = recl
     audi:StationStore.getAudience()
     members:StationStore.getMembers()
     station:util.mainStation()
+    filter:MessageStore.getFilter()
     stations:StationStore.getStations()
     configs:StationStore.getConfigs()
     fetching:MessageStore.getFetching()
@@ -27,6 +29,7 @@ module.exports = recl
   getInitialState: -> @stateFromStore()
   componentDidMount: ->
     @$el = $(ReactDOM.findDOMNode())
+    MessageStore.addChangeListener @_onChangeStore
     StationStore.addChangeListener @_onChangeStore
     if @state.listening.indexOf(@state.station) is -1
       StationActions.listenStation @state.station
@@ -56,10 +59,16 @@ module.exports = recl
         $('.menu.depth-1 .add').addClass 'valid-false'
 
   _openStation: (e) ->
-    $t = $(e.target)
-    @setState {open:$t.attr('data-station')}
+    @setState {open:$(e.target).attr('data-station')}
 
   _closeStation: -> @setState {open:null}
+
+  _filterStation: (e) ->
+    station = $(e.target).attr('data-station')
+    if @state.filter isnt station
+      MessageActions.setFilter station
+    else
+      MessageActions.clearFilter()
 
   _remove: (e) ->
     e.stopPropagation()
@@ -115,9 +124,15 @@ module.exports = recl
               onClick:@_openStation
               "data-station":source}, source)
             (div {
-              className:"close"
-              onClick:@_remove
-              "data-station":source }, "✕")
+              className:'options'
+              },
+              (div {
+                onClick:@_filterStation,
+                "data-station":source}, if @state.filter is source then "Clear" else "Filter")
+              (div {
+                onClick:@_remove
+                "data-station":source }, "Leave")
+            )
           )
       sources.push (input {
           key:"placeholder"

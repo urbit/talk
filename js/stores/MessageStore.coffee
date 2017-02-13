@@ -8,6 +8,7 @@ _messages = {}
 _fetching = false
 _last = null
 _station  = null
+_filter = null
 _listening = []
 _typing = false
 
@@ -40,13 +41,19 @@ MessageStore = _.merge new EventEmitter,{
 
   setTyping: (state) -> _typing = state
 
-  setListening: (station) -> 
+  setListening: (station) ->
     if _listening.indexOf(station) isnt -1
       console.log 'already listening on that station (somehow).'
     else
       _listening.push station
 
   setStation: (station) -> _station = station
+
+  getFilter: -> _filter
+
+  setFilter: (station) -> _filter = station
+
+  clearFilter: (station) -> _filter = null
 
   sendMessage: (message) ->
     _messages[message.thought.serial] = message
@@ -61,7 +68,17 @@ MessageStore = _.merge new EventEmitter,{
     _last = last if last < _last or _last is null or get is true
     _fetching = false
 
-  getAll: -> _.values _messages
+  getAll: ->
+    mess = _.values _messages
+    if !_filter
+      mess
+    else
+      _.filter mess, (mess) ->
+        audi = _.keys mess.thought.audience
+        if audi.indexOf(_filter) isnt -1
+          return true
+        else
+          return false
 
   getFetching: -> _fetching
 
@@ -74,10 +91,18 @@ MessageStore.setMaxListeners 100
 
 MessageStore.dispatchToken = MessageDispatcher.register (payload) ->
   action = payload.action
-  
+
   switch action.type
     when 'station-switch'
       MessageStore.setStation action.station
+      break
+    when 'messages-filter'
+      MessageStore.setFilter action.station
+      MessageStore.emitChange()
+      break
+    when 'messages-filter-clear'
+      MessageStore.clearFilter action.station
+      MessageStore.emitChange()
       break
     when 'messages-listen'
       MessageStore.setListening action.station
