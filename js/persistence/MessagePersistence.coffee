@@ -1,14 +1,14 @@
 util = require '../util.coffee'
 
-window.urb.appl = "talk"
-send = (data,cb)-> window.urb.send data, {mark:"talk-command"}, cb
+window.urb.appl = "talk-guardian"
+send = (data,cb)-> window.urb.send data, {mark:"talk-action"}, cb
 
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->
     console.log 'listen station'
     console.log arguments
     $this = this
-    path = (util.talkPath {'f_grams'}, station, since)
+    path = (util.talkPath 'circle', station, since)
     window.urb.bind path, (err,res) ->
         if err or not res.data
           console.log path, 'err!'
@@ -20,9 +20,10 @@ module.exports = ({MessageActions}) ->
         console.log(res.data)
         if res.data.ok is true
           MessageActions.listeningStation station
-        if res.data?.grams?.tele
-          {tele,num} = res.data?.grams
-          MessageActions.loadMessages tele, num
+        if res.data?.circle?.nes # prize
+          MessageActions.loadMessages res.data.circle.nes
+        if res.data?.circle?.gram # rumor
+          MessageActions.loadMessages [res.data.circle.gram]
 
   get: (station,start,end) ->
     end   = window.urb.util.numDot end
@@ -42,8 +43,8 @@ module.exports = ({MessageActions}) ->
           console.log 'done'
           console.log res
 
-  sendMessage: (messageType, message,cb) ->
-    send {"#{messageType}": [message]}, (err,res) ->
+  sendMessage: (message,cb) ->
+    send {convey: [message]}, (err,res) ->
       console.log 'sent'
       console.log arguments
       cb(err,res) if cb

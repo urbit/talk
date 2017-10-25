@@ -66,19 +66,20 @@ module.exports = recl
       when fat then @classesInSpeech fat.taf
 
   render: ->
-    {thought} = @props
-    delivery = _.uniq _.pluck thought.audience, "delivery"
-    speech = thought.statement.speech
-    bouquet = thought.statement.bouquet
+    gam = @props
+    delivery = _.uniq _.pluck gam.aud, "delivery"
+    speech = gam.sep
+    #bouquet = gam.statement.bouquet
     if !speech? then return;
 
     name = if @props.name then @props.name else ""
-    aude = _.keys thought.audience
+    aude = _.keys gam.aud
     audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi)
 
     mainStation = util.mainStationPath(window.urb.user)
     type = if mainStation in aude then 'private' else 'public'
 
+    ###
     if(_.filter(bouquet, ["comment"]).length > 0)
       comment = true
       for k,v of speech.mor
@@ -88,12 +89,13 @@ module.exports = recl
         if v.app then path = v.app.txt.replace "comment on ", ""
       audi = (a {href:url}, path)
       speech = {com:{txt,url}}
+    ###
 
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
       (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
       {'new': @props.unseen}
-      {comment}
+      {comment:false} #{comment}
       @classesInSpeech speech
 
     style =
@@ -106,8 +108,8 @@ module.exports = recl
            (React.createElement Member,{ship:@props.ship,glyph:@props.glyph,key:"member"})
           )
           h3 {className:"path",onClick:@_handleAudi,key:"audi"}, audi
-          h3 {className:"time",key:"time"}, @convTime thought.statement.date
+          h3 {className:"time",key:"time"}, @convTime gam.wen
         )
         (div {className:"speech",key:"speech"},
-          @renderSpeech speech,bouquet
+          @renderSpeech speech #,bouquet
     ))

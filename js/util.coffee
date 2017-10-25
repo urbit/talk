@@ -89,11 +89,5 @@ module.exports = util =
     return ($(window).scrollTop()+$('.writing').outerHeight() <
             util.writingPosition)
 
-  talkPath: (types,components...)->
-    encodedTypes =
-      (for key,val of types
-        unless key in ['a_group','f_grams','v_glyph','x_cabal']
-          throw new Error "Weird type: '#{key}'"
-        key[0] if val
-      ).join ''
-    ['',encodedTypes,components...].join '/'
+  talkPath: (components...)->
+    ['',components...].join '/'

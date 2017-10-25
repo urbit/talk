@@ -72,17 +72,17 @@ module.exports = recl
 
   setAudience: ->
     return if @state.typing or not @last
-    laudi = _.keys @last.thought.audience
+    laudi = _.keys @last.audi
     return if (_.isEmpty laudi) or not
               _(laudi).difference(@state.audi).isEmpty()
-      StationActions.setAudience _.keys(@last.thought.audience)
+      StationActions.setAudience _.keys(@last.audi)
 
   sortedMessages: (messages) ->
     station = @state.station
     _.sortBy messages, (message) =>
-          message.pending = message.thought.audience[station]
+          #message.pending = message.audi[station]
           message.key
-          #message.thought.statement.date
+          #message.wen
 
   componentWillMount: -> Infinite = window.Infinite # require 'react-infinite'
 
@@ -160,19 +160,24 @@ module.exports = recl
 
     _messageGroups = [[]]
     for message,index in messages
-      nowSaid = [message.ship,_.keys(message.thought.audience)]
+      nowSaid = [message.aut,_.keys(message.audi)]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
       lineNums = 1
       speechArr = []
       context.font = FONT_SIZE + 'px bau'
-      if message.thought.statement.speech.lin?
-        speechArr = message.thought.statement.speech.lin.txt.split(/(\s|-)/)
-      else if message.thought.statement.speech.url?
-        speechArr = message.thought.statement.speech.url.txt.split(/(\s|-)/)
-      else if message.thought.statement.speech.fat?
-        context.font = (FONT_SIZE * 0.9) + 'px scp'
-        speechArr = message.thought.statement.speech.fat.taf.exp.txt.split(/(\s|-)/)
+      if message.sep.lin?
+        speechArr = message.sep.lin.msg.split(/(\s|-)/)
+      else if message.sep.url?
+        speechArr = message.sep.url.split(/(\s|-)/)
+      else if message.sep.exp?
+        speechArr[0] = message.sep.exp.exp
+        for lines,i in message.sep.exp.res
+          speechArr = speechArr.concat lines...
+      else if message.sep.app?
+        speechArr = message.sep.exp.msg.split(/(\s|-)/)
+      else if message.sep.fat?
+        speechArr[0] = 'fat'
 
       _.reduce(_.tail(speechArr), (base, word) ->
         if context.measureText(base + word).width > speechLength
@@ -198,13 +203,12 @@ module.exports = recl
         height = null
         marginTop = null
 
-      {speech} = message.thought.statement
-      audience = (_.keys message.thought.audience).join " "
+      audience = (_.keys message.aud).join " "
       mez = rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
-        ship: if speech?.app then "system" else message.ship
+        ship: if message.sep.app then message.sep.app.app else message.aut
         glyph: @state.glyph[audience] || @props['default-glyph']
         unseen: lastIndex and lastIndex is index
       })

@@ -50,9 +50,7 @@ module.exports = recl
       v = $input.val().toLowerCase()
       if v[0] isnt "~" then v = "~#{v}"
       if @validateSource v
-        _sources = _.clone @state.configs[@state.station].sources
-        _sources.push v
-        StationActions.setSources @state.station,_sources
+        StationActions.addSources @state.station,[v]
         $input.val('')
         $input.blur()
       else
@@ -74,9 +72,7 @@ module.exports = recl
     e.stopPropagation()
     e.preventDefault()
     _station = $(e.target).attr "data-station"
-    _sources = _.clone @state.configs[@state.station].sources
-    _sources.splice _sources.indexOf(_station),1
-    StationActions.setSources @state.station,_sources
+    StationActions.remSources @state.station,[_station]
 
   render: ->
     parts = []
