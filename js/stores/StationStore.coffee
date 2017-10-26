@@ -67,8 +67,12 @@ StationStore = _.merge new EventEmitter,{
   createStation: (station) ->
     _stations.push(station) if _stations.indexOf(station) is -1
 
-  loadStations: (stations) -> _stations = stations 
-  
+  removeStation: (station) ->
+    i = _stations.indexOf(station)
+    _stations.splice(i, 1) if i > -1
+
+  loadStations: (stations) -> _stations = stations
+
   loadGlyphs: (glyphs) ->
     _glyphs = glyphs
     _shpylg = {}
@@ -148,6 +152,10 @@ StationStore.dispatchToken = StationDispatcher.register (payload) ->
       break
     when "station-create"
       StationStore.createStation action.station
+      StationStore.emitChange()
+      break
+    when "station-remove"
+      StationStore.removeStation action.station
       StationStore.emitChange()
       break
     when "members-load"

@@ -11,7 +11,7 @@ module.exports = ({StationActions})->
   createStation: (name,cb) ->
     create name, "", "black", cb
 
-  removeStation: (name,cb) -> remove name, null, cb
+  removeStation: (name,cb) -> remove name, 'deleted through webtalk', cb
 
   modSources: (station,sub,sources) ->
     source station, sub, sources, (err,res) ->
@@ -20,28 +20,21 @@ module.exports = ({StationActions})->
   addSources: (station,sources) -> modSources station, true, sources
   remSources: (station,sources) -> modSources station, false, sources
 
-  #TODO
-  listen: -> window.urb.bind "/", (err,res) ->
-    if err or not res.data
-      console.log '/ err'
-      console.log err
-      return
-    console.log '/'
-    console.log res.data
-    {house} = res.data # one of
-    if house
-      StationActions.loadStations res.data.house
+  listen: ->
+    # we use a far future date in the path so we don't receive grams here
+    date = window.urb.util.toDate (new Date())
+    window.urb.bind '/reader', (err,res) ->
+      if err or not res.data
+        console.log 'sp err'
+        console.log err
+        return
+      {gys,nis} = res.data.reader
+      StationActions.loadGlyphs gys
+      #TODO loadNicks?
 
-  #TODO
-  listenStation: (station,{group,glyph,cabal}) ->
+  listenStation: (station) ->
     subscribed[station] ?= {}
-    types = {a_group:group,v_glyph:glyph,x_cabal:cabal}
-    for k of types
-      if subscribed[station][k]
-        delete types[k]
-      else subscribed[station][k] = types[k]
-    return if _.isEmpty types
-    path = (util.talkPath types, station)
+    path = (util.talkPath 'circle', station, '0')
     window.urb.bind path, (err,res) ->
       if err or not res
         console.log path, 'err'
@@ -49,15 +42,24 @@ module.exports = ({StationActions})->
         return
       console.log(path)
       console.log(res.data)
-      {ok,group,cabal,glyph} = res.data # one of
+      #TODO 'new'?
+      {config,status} = res.data.circle # one of
+      if res.data.ok
+        StationActions.listeningStation station
       switch
-        when ok
-          StationActions.listeningStation station
-        when group
-          group.global[util.mainStationPath(window.urb.user)] =
-            group.local
-          StationActions.loadMembers group.global
-        when cabal?.loc
-          StationActions.loadConfig station,cabal.loc
-        when glyph
-          StationActions.loadGlyphs glyph
+        when config
+          if config.dif.source?
+            if config.dif.source.add
+              StationActions.addStation config.dif.source.src
+            else
+              StationActions.remStation config.dif.source.src
+          break
+
+        # when group
+        #   group.global[util.mainStationPath(window.urb.user)] =
+        #     group.local
+        #   StationActions.loadMembers group.global
+        # when cabal?.loc
+        #   StationActions.loadConfig station,cabal.loc
+        # when glyph
+        #   StationActions.loadGlyphs glyph

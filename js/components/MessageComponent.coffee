@@ -30,44 +30,52 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
-  renderSpeech: ({lin,app,exp,tax,url,mor,fat,com}) ->  # one of
+  renderSpeech: ({lin,url,exp,ire,fat,inv,app}) ->  # one of
     switch
-      when (lin or app or exp or tax)
-        (lin or app or exp or tax).txt
+      when lin
+        lin.msg
       when url
-        (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
-      when com
+        (a {href:url,target:"_blank",rel:"noopener",key:"speech"}, url)
+      when exp
         (div {},
-          com.txt
-          (div {}, (a {className:"btn", href: com.url}, "Go to thread"))
+          (exp.exp)
+          (div {className:"fat"}, exp.res.join("\n"))
         )
-      when mor then mor.map @renderSpeech
+      when ire
+        #TODO show parent on-hover or something
+        @renderSpeech ire.sep
       when fat
         (div {},
-          (@renderSpeech fat.taf)
-          (div {className:"fat"}, @renderTorso fat.tor)
+          (@renderSpeech fat.sep)
+          (div {className:"fat"}, @renderAttache fat.tac)
         )
+      when inv
+        prex = inv.inv ? "invited you to " : "banished you from "
+        prex + inv.cir
+      when app
+        app.msg
       else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
-  renderTorso: ({text,tank,name}) -> # one of
+  renderAttache: ({text,tank,name}) -> # one of
     switch
       when text? then text
       when tank? then pre {}, tank.join("\n")
-      when name? then (div {}, name.nom, ": ", @renderTorso name.mon)
+      when name? then (div {}, name.nom, ": ", @renderTorso name.tac)
       else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
 
-  classesInSpeech: ({url,exp,app,lin,mor,fat}) -> # at most one of
+  classesInSpeech: ({lin,url,exp,ire,fat,inv,app}) -> # at most one of
     switch
+      when lin then {say: lin.pat}
       when url then "url"
       when exp then "exp"
+      when ire then @classesInSpeech ire.sep
+      when fat then @classesInSpeech fat.sep
+      when inv then {say: false}
       when app then "say"
-      when lin then {say: lin.say is false}
-      when mor then mor?.map @classesInSpeech
-      when fat then @classesInSpeech fat.taf
 
   render: ->
     gam = @props
-    delivery = _.uniq _.pluck gam.aud, "delivery"
+    heard = gam.heard
     speech = gam.sep
     #bouquet = gam.statement.bouquet
     if !speech? then return;
@@ -93,7 +101,7 @@ module.exports = recl
 
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
-      (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
+      (if heard then "received" else "pending"),
       {'new': @props.unseen}
       {comment:false} #{comment}
       @classesInSpeech speech

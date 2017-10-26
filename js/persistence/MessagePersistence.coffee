@@ -21,9 +21,14 @@ module.exports = ({MessageActions}) ->
         if res.data.ok is true
           MessageActions.listeningStation station
         if res.data?.circle?.nes # prize
+          res.data.circle.nes.map (env) ->
+            env.gam.heard = true
+            env
           MessageActions.loadMessages res.data.circle.nes
-        if res.data?.circle?.gram # rumor
+        if res.data?.circle?.gram # rumor (new msg)
+          res.data.circle.gram.gam.heard = true
           MessageActions.loadMessages [res.data.circle.gram]
+        # ignore all other rumors, they get handled by StationPersistence
 
   get: (station,start,end) ->
     end   = window.urb.util.numDot end

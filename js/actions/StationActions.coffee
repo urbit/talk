@@ -18,8 +18,15 @@ Persistence = _persistence StationActions: module.exports =
   listeningStation: viewAction (station) -> {station,type:"station-listen"}
 
   createStation: (station) ->
-    Dispatcher.handleViewAction {station,type: "station-create"}
+    addStation(station)
     Persistence.createStation station
+
+  addStation: (station) ->
+    console.log '# sa as'
+    Dispatcher.handleViewAction {station,type: "station-create"}
+  remStation: (station) ->
+    console.log '# sa rs'
+    Dispatcher.handleViewAction {station,type: "station-remove"}
 
   listen:    () -> Persistence.listen()
   ping: (_ping) -> Persistence.ping _ping

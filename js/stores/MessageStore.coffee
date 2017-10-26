@@ -59,7 +59,7 @@ MessageStore = _.merge new EventEmitter,{
     _messages[message.uid] = message
 
   loadMessages: (messages,last,get) ->
-    key = last
+    key = last or 0
     for v in messages
       v = v.gam or v # open envelope
       serial = v.uid
@@ -75,11 +75,7 @@ MessageStore = _.merge new EventEmitter,{
       mess
     else
       _.filter mess, (mess) ->
-        audi = _.keys mess.aud
-        if audi.indexOf(_filter) isnt -1
-          return true
-        else
-          return false
+        return mess.aud.indexOf(_filter) isnt -1
 
   getFetching: -> _fetching
 
