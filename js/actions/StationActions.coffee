@@ -22,10 +22,8 @@ Persistence = _persistence StationActions: module.exports =
     Persistence.createStation station
 
   addStation: (station) ->
-    console.log '# sa as'
     Dispatcher.handleViewAction {station,type: "station-create"}
   remStation: (station) ->
-    console.log '# sa rs'
     Dispatcher.handleViewAction {station,type: "station-remove"}
 
   listen:    () -> Persistence.listen()

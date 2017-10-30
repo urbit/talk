@@ -219,9 +219,9 @@ module.exports = recl
 
     if @props.chrono isnt "reverse"
       _messageGroups = _messageGroups.reverse()
-      
+
     _messages = _.flatten _messageGroups
-    
+
     if (not @props.readOnly?) and INFINITE
       body = rele Infinite, {
           useWindowAsScrollContainer: true
@@ -231,7 +231,7 @@ module.exports = recl
         }, _messages
     else
       body = _messages
-      
+
     fetching = if @state.fetching then (rele Load, {})
 
     (div {className:"grams", key:"messages"}, body, fetching)

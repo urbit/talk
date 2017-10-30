@@ -21,7 +21,6 @@ module.exports = ({StationActions})->
   remSources: (station,sources) -> modSources station, false, sources
 
   listen: ->
-    # we use a far future date in the path so we don't receive grams here
     date = window.urb.util.toDate (new Date())
     window.urb.bind '/reader', (err,res) ->
       if err or not res.data
@@ -40,8 +39,6 @@ module.exports = ({StationActions})->
         console.log path, 'err'
         console.log err
         return
-      console.log(path)
-      console.log(res.data)
       #TODO 'new'?
       {cos,pes,config,status} = res.data.circle # one of
       if res.data.ok

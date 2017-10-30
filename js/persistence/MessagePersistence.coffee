@@ -5,8 +5,6 @@ send = (data,cb)-> window.urb.send data, {mark:"talk-action"}, cb
 
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->
-    console.log 'listen station'
-    console.log arguments
     $this = this
     path = (util.talkPath 'circle', station, since)
     window.urb.bind path, (err,res) ->
@@ -16,8 +14,6 @@ module.exports = ({MessageActions}) ->
           console.log res
           $this.listenStation station,since
           return
-        console.log(path)
-        console.log(res.data)
         if res.data.ok is true
           MessageActions.listeningStation station
         if res.data?.circle?.nes # prize

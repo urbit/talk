@@ -40,11 +40,11 @@ StationStore = _.merge new EventEmitter,{
   getConfigs: -> _config
 
   getConfig: (station) -> _config[station]
-  
+
   getGlyph: (station) -> _shpylg[station]
-  
+
   getGlyphMap: -> _shpylg
-  
+
   getGlyphAudience: (glyph) ->
     aud = _glyphs[glyph] ? []
     if aud.length is 1
@@ -58,7 +58,7 @@ StationStore = _.merge new EventEmitter,{
 
   getListening: -> _listening
 
-  setListening: (station) -> 
+  setListening: (station) ->
     if _listening.indexOf(station) isnt -1
       console.log 'already listening on that station (somehow).'
     else
@@ -86,8 +86,7 @@ StationStore = _.merge new EventEmitter,{
 
   setStation: (station) -> _station = station
 
-  unsetStation: (station) -> 
-    _station = null if _station is station 
+  unsetStation: (station) -> _station = null if _station is station
 
   getStation: -> _station
 
@@ -97,7 +96,7 @@ StationStore = _.merge new EventEmitter,{
 
   getTyping: () -> _typing
 
-  setTyping: (station,state) -> 
+  setTyping: (station,state) ->
     for k,v of _typing
       _typing[k] = (k is station)
     _typing[station] = state
