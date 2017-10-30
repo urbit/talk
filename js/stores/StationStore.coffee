@@ -52,9 +52,9 @@ StationStore = _.merge new EventEmitter,{
 
   getMember: (ship) -> {ship:ship}
 
-  loadMembers: (members) -> _members = members
+  loadMembers: (station,members) -> _members[station] = members
 
-  getMembers: -> _members
+  getMembers: (station) -> _members[station]
 
   getListening: -> _listening
 

@@ -66,16 +66,16 @@ module.exports = recl
         this.state.last &&
         this.state.last > 0
       end = @state.last-@pageSize
-      end = 0 if end < 0
       @lastLength = @length
-      MessageActions.getMore @state.station,(@state.last+1),end
+      if end >= 0
+        MessageActions.getMore @state.station,(@state.last+1),end
 
   setAudience: ->
     return if @state.typing or not @last
-    laudi = _.keys @last.audi
+    laudi = @last.aud
     return if (_.isEmpty laudi) or not
               _(laudi).difference(@state.audi).isEmpty()
-      StationActions.setAudience _.keys(@last.audi)
+      StationActions.setAudience @last.aud
 
   sortedMessages: (messages) ->
     station = @state.station
@@ -145,7 +145,7 @@ module.exports = recl
     messages = @sortedMessages @state.messages
 
     @last = messages[messages.length-1]
-    if @last?.ship && @last.ship is window.urb.user then @lastSeen = @last
+    if @last?.aut && @last.aut is window.urb.user then @lastSeen = @last
     @length = messages.length
 
     setTimeout (=> @checkMore() if @length < @pageSize), 1
@@ -160,7 +160,8 @@ module.exports = recl
 
     _messageGroups = [[]]
     for message,index in messages
-      nowSaid = [message.aut,_.keys(message.audi)]
+      if message.sep.app then message.aut = message.sep.app.app
+      nowSaid = [message.aut,message.aud]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
       lineNums = 1
@@ -172,10 +173,8 @@ module.exports = recl
         speechArr = message.sep.url.split(/(\s|-)/)
       else if message.sep.exp?
         speechArr[0] = message.sep.exp.exp
-        for lines,i in message.sep.exp.res
-          speechArr = speechArr.concat lines...
       else if message.sep.app?
-        speechArr = message.sep.exp.msg.split(/(\s|-)/)
+        speechArr = message.sep.app.msg.split(/(\s|-)/)
       else if message.sep.fat?
         speechArr[0] = 'fat'
 
@@ -203,13 +202,13 @@ module.exports = recl
         height = null
         marginTop = null
 
-      audience = (_.keys message.aud).join " "
+      aud = message.aud.join " "
       mez = rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
-        ship: if message.sep.app then message.sep.app.app else message.aut
-        glyph: @state.glyph[audience] || @props['default-glyph']
+        ship: message.aut
+        glyph: @state.glyph[aud] || @props['default-glyph']
         unseen: lastIndex and lastIndex is index
       })
       mez.computedHeight = height+marginTop

@@ -39,7 +39,7 @@ module.exports = recl
       when exp
         (div {},
           (exp.exp)
-          (div {className:"fat"}, exp.res.join("\n"))
+          (div {className:"fat"}, pre {}, exp.res.join("\n"))
         )
       when ire
         #TODO show parent on-hover or something
@@ -70,8 +70,8 @@ module.exports = recl
       when exp then "exp"
       when ire then @classesInSpeech ire.sep
       when fat then @classesInSpeech fat.sep
-      when inv then {say: false}
-      when app then "say"
+      when inv then {say: true}
+      when app then "exp"
 
   render: ->
     gam = @props
@@ -81,11 +81,10 @@ module.exports = recl
     if !speech? then return;
 
     name = if @props.name then @props.name else ""
-    aude = _.keys gam.aud
-    audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi)
+    audi = util.clipAudi(gam.aud).map (_audi) -> (div {key:_audi}, _audi)
 
     mainStation = util.mainStationPath(window.urb.user)
-    type = if mainStation in aude then 'private' else 'public'
+    type = if mainStation in gam.aud then 'private' else 'public'
 
     ###
     if(_.filter(bouquet, ["comment"]).length > 0)

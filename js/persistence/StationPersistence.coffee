@@ -43,16 +43,22 @@ module.exports = ({StationActions})->
       console.log(path)
       console.log(res.data)
       #TODO 'new'?
-      {config,status} = res.data.circle # one of
+      {cos,pes,config,status} = res.data.circle # one of
       if res.data.ok
         StationActions.listeningStation station
       switch
-        when config
+        when cos # prize, configs
+          StationActions.loadConfig station,cos.loc
+        when pes # prize, presence
+          StationActions.loadMembers station,pes.loc
+        when config # rumor, config
           if config.dif.source?
             if config.dif.source.add
               StationActions.addStation config.dif.source.src
             else
               StationActions.remStation config.dif.source.src
+        when status # rumor, presence
+          #TODO
           break
 
         # when group

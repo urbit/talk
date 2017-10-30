@@ -36,3 +36,5 @@ Persistence = _persistence StationActions: module.exports =
 
   setSources: (station,sources) ->
     Persistence.setSources station,window.urb.ship,sources
+  remSources: (station,sources) ->
+    Persistence.remSources station,sources

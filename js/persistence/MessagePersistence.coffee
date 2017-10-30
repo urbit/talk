@@ -33,17 +33,14 @@ module.exports = ({MessageActions}) ->
   get: (station,start,end) ->
     end   = window.urb.util.numDot end
     start = window.urb.util.numDot start
-    path = (util.talkPath {'f_grams'}, station, end, start)
+    path = (util.talkPath 'circle', station, end, start)
     window.urb.bind path, (err,res) ->
       if err or not res.data
-        console.log path, '/e/s err'
+        console.log path, '/circle err'
         console.log err
         return
-      console.log path, '/e/s'
-      console.log res        
-      if res.data?.grams?.tele
-        {tele,num} = res.data?.grams
-        MessageActions.loadMessages tele,num,true
+      if res.data?.circle?.nes
+        MessageActions.loadMessages res.data.circle.nes
         window.urb.drop path, (err,res) ->
           console.log 'done'
           console.log res
