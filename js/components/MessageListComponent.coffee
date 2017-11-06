@@ -140,6 +140,20 @@ module.exports = recl
 
   _handleAudi: (audi) -> StationActions.setAudience audi
 
+  _getSpeechArr: (spec) ->
+    if spec.lin?
+      return spec.lin.msg.split(/(\s|-)/)
+    else if spec.url?
+      return spec.url.split(/(\s|-)/)
+    else if spec.exp?
+      return [spec.exp.exp]
+    else if spec.app?
+      return @_getSpeechArr(spec.app.sep)
+    else if spec.fat?
+      return @_getSpeechArr(spec.fat.sep)
+    else
+      return []
+
   render: ->
     station = @state.station
     messages = @sortedMessages @state.messages
@@ -165,18 +179,9 @@ module.exports = recl
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
       lineNums = 1
-      speechArr = []
+      speechArr = @_getSpeechArr(message.sep)
       context.font = FONT_SIZE + 'px bau'
-      if message.sep.lin?
-        speechArr = message.sep.lin.msg.split(/(\s|-)/)
-      else if message.sep.url?
-        speechArr = message.sep.url.split(/(\s|-)/)
-      else if message.sep.exp?
-        speechArr[0] = message.sep.exp.exp
-      else if message.sep.app?
-        speechArr = message.sep.app.msg.split(/(\s|-)/)
-      else if message.sep.fat?
-        speechArr[0] = 'fat'
+
 
       _.reduce(_.tail(speechArr), (base, word) ->
         if context.measureText(base + word).width > speechLength

@@ -53,15 +53,14 @@ module.exports = recl
         prex = inv.inv ? "invited you to " : "banished you from "
         prex + inv.cir
       when app
-        app.msg
+        @renderSpeech app.sep
       else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
   renderAttache: ({text,tank,name}) -> # one of
     switch
-      when text? then text
+      when text? then pre {}, text
       when tank? then pre {}, tank.join("\n")
-      when name? then (div {}, name.nom, ": ", @renderTorso name.tac)
-      else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
+      when name? then (pre {}, name.nom, ":\n", @renderAttache name.tac)
 
   classesInSpeech: ({lin,url,exp,ire,fat,inv,app}) -> # at most one of
     switch
