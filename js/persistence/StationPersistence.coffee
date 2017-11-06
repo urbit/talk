@@ -33,7 +33,7 @@ module.exports = ({StationActions})->
 
   listenStation: (station) ->
     subscribed[station] ?= {}
-    path = (util.talkPath 'circle', station, '0')
+    path = (util.talkPath 'circle', station, 'config-l', 'group-r', '0')
     window.urb.bind path, (err,res) ->
       if err or not res
         console.log path, 'err'

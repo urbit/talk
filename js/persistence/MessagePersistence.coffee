@@ -6,7 +6,7 @@ send = (data,cb)-> window.urb.send data, {mark:"talk-action"}, cb
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->
     $this = this
-    path = (util.talkPath 'circle', station, since)
+    path = (util.talkPath 'circle', station, 'grams', since)
     window.urb.bind path, (err,res) ->
         if err or not res.data
           console.log path, 'err!'
@@ -24,12 +24,11 @@ module.exports = ({MessageActions}) ->
         if res.data?.circle?.gram # rumor (new msg)
           res.data.circle.gram.gam.heard = true
           MessageActions.loadMessages [res.data.circle.gram]
-        # ignore all other rumors, they get handled by StationPersistence
 
   get: (station,start,end) ->
     end   = window.urb.util.numDot end
     start = window.urb.util.numDot start
-    path = (util.talkPath 'circle', station, end, start)
+    path = (util.talkPath 'circle', station, 'grams', end, start)
     window.urb.bind path, (err,res) ->
       if err or not res.data
         console.log path, '/circle err'
