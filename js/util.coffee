@@ -5,20 +5,10 @@ module.exports = util =
       if station.indexOf('dbg.nopack') isnt -1 then station = util.mainStation()
     else util.mainStation()
 
-  mainStations: ["court","floor","porch"]
-
-  mainStationPath: (user) -> if user then "~#{user}/#{util.mainStation user}"
+  mainStationPath: (user) -> if user then "~#{user}/inbox"
 
   mainStation: (user) ->
-    if not user then user = window.urb.user
-    if not user then return
-    switch user.length
-      when 3
-        return "court"
-      when 6
-        return "floor"
-      else
-        return "porch"
+    return "inbox"
 
   clipAudi: (audi) ->
     audi = audi.join " "
