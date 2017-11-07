@@ -32,7 +32,7 @@ Persistence = _persistence StationActions: module.exports =
   listenStation: (station) -> Persistence.listenStation station, {'group','glyph','cabal'}
   createStation:    (name) -> Persistence.createStation name
 
-  setSources: (station,sources) ->
-    Persistence.setSources station,window.urb.ship,sources
+  addSources: (station,sources) ->
+    Persistence.addSources station,sources
   remSources: (station,sources) ->
     Persistence.remSources station,sources

@@ -17,8 +17,8 @@ module.exports = ({StationActions})->
     source station, sub, sources, (err,res) ->
       console.log 'talk-action'
       console.log arguments
-  addSources: (station,sources) -> modSources station, true, sources
-  remSources: (station,sources) -> modSources station, false, sources
+  addSources: (station,sources) -> this.modSources station, true, sources
+  remSources: (station,sources) -> this.modSources station, false, sources
 
   listen: ->
     date = window.urb.util.toDate (new Date())
