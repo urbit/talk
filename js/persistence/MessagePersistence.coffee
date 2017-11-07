@@ -1,7 +1,7 @@
 util = require '../util.coffee'
 
-window.urb.appl = "talk-guardian"
-send = (data,cb)-> window.urb.send data, {mark:"talk-action"}, cb
+window.urb.appl = "hall"
+send = (data,cb)-> window.urb.send data, {mark:"hall-action"}, cb
 
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->

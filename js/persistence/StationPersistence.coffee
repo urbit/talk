@@ -1,7 +1,7 @@
 util = require '../util.coffee'
 
-window.urb.appl = "talk-guardian"
-send = (data,cb)-> window.urb.send data, {mark:"talk-action"}, cb
+window.urb.appl = "hall"
+send = (data,cb)-> window.urb.send data, {mark:"hall-action"}, cb
 create = (nom,des,sec,cb)-> send {create:{nom,des,sec}}, cb
 remove = (nom,why,cb)-> send {delete:{nom,why}}, cb
 source = (nom,sub,srs,cb)-> send {source:{nom,sub,srs}}, cb
@@ -15,7 +15,7 @@ module.exports = ({StationActions})->
 
   modSources: (station,sub,sources) ->
     source station, sub, sources, (err,res) ->
-      console.log 'talk-action'
+      console.log 'hall-action source'
       console.log arguments
   addSources: (station,sources) -> this.modSources station, true, sources
   remSources: (station,sources) -> this.modSources station, false, sources
