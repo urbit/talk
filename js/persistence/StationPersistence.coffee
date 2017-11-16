@@ -22,12 +22,12 @@ module.exports = ({StationActions})->
 
   listen: ->
     date = window.urb.util.toDate (new Date())
-    window.urb.bind '/reader', (err,res) ->
+    window.urb.bind '/client', (err,res) ->
       if err or not res.data
         console.log 'sp err'
         console.log err
         return
-      {gys,nis} = res.data.reader
+      {gys,nis} = res.data.client
       StationActions.loadGlyphs gys
       #TODO loadNicks?
 
