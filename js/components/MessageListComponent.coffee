@@ -66,6 +66,7 @@ module.exports = recl
         this.state.last &&
         this.state.last > 0
       end = @state.last-@pageSize
+      end = 0 if end < 0
       @lastLength = @length
       if end >= 0
         MessageActions.getMore @state.station,(@state.last+1),end

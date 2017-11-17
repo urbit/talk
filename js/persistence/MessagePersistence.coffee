@@ -35,6 +35,9 @@ module.exports = ({MessageActions}) ->
         console.log err
         return
       if res.data?.circle?.nes
+        res.data.circle.nes.map (env) ->
+          env.gam.heard = true
+          env
         MessageActions.loadMessages res.data.circle.nes
         window.urb.drop path, (err,res) ->
           console.log 'done'
