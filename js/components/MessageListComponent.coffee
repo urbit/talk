@@ -30,7 +30,7 @@ module.exports = recl
 
   stateFromStore: -> {
     messages:MessageStore.getAll()
-    last:MessageStore.getLast()
+    oldest:MessageStore.getOldest()
     fetching:MessageStore.getFetching()
     listening:MessageStore.getListening()
     station:StationStore.getStation()
@@ -61,15 +61,16 @@ module.exports = recl
       else $(window).scrollTop() < @paddingTop
 
   checkMore: ->
+    @state.oldest = MessageStore.getOldest()
     if @atScrollEdge() &&
         @state.fetching is false &&
-        this.state.last &&
-        this.state.last > 0
-      end = @state.last-@pageSize
+        this.state.oldest &&
+        this.state.oldest > 0
+      end = @state.oldest-@pageSize
       end = 0 if end < 0
       @lastLength = @length
       if end >= 0
-        MessageActions.getMore @state.station,(@state.last+1),end
+        MessageActions.getMore @state.station,(@state.oldest+1),end
 
   setAudience: ->
     return if @state.typing or not @last
