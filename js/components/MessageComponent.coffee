@@ -30,55 +30,62 @@ module.exports = recl
     return if user.toLowerCase() is 'system'
     @props._handlePm user
 
-  renderSpeech: ({lin,app,exp,tax,url,mor,fat,com}) ->  # one of
+  renderSpeech: ({lin,url,exp,ire,fat,inv,app}) ->  # one of
     switch
-      when (lin or app or exp or tax)
-        (lin or app or exp or tax).txt
+      when lin
+        lin.msg
       when url
-        (a {href:url.txt,target:"_blank",key:"speech"}, url.txt)
-      when com
+        (a {href:url,target:"_blank",rel:"noopener",key:"speech"}, url)
+      when exp
         (div {},
-          com.txt
-          (div {}, (a {className:"btn", href: com.url}, "Go to thread"))
+          (exp.exp)
+          (div {className:"fat"}, pre {}, exp.res.join("\n"))
         )
-      when mor then mor.map @renderSpeech
+      when ire
+        #TODO show parent on-hover or something
+        @renderSpeech ire.sep
       when fat
         (div {},
-          (@renderSpeech fat.taf)
-          (div {className:"fat"}, @renderTorso fat.tor)
+          (@renderSpeech fat.sep)
+          (div {className:"fat"}, @renderAttache fat.tac)
         )
+      when inv
+        prex = inv.inv ? "invited you to " : "banished you from "
+        prex + inv.cir
+      when app
+        @renderSpeech app.sep
       else "Unknown speech type:" + (" %"+x for x of arguments[0]).join ''
 
-  renderTorso: ({text,tank,name}) -> # one of
+  renderAttache: ({text,tank,name}) -> # one of
     switch
-      when text? then text
+      when text? then pre {}, text
       when tank? then pre {}, tank.join("\n")
-      when name? then (div {}, name.nom, ": ", @renderTorso name.mon)
-      else "Unknown torso:"+(" %"+x for x of arguments[0]).join ''
+      when name? then (pre {}, name.nom, ":\n", @renderAttache name.tac)
 
-  classesInSpeech: ({url,exp,app,lin,mor,fat}) -> # at most one of
+  classesInSpeech: ({lin,url,exp,ire,fat,inv,app}) -> # at most one of
     switch
+      when lin then {say: lin.pat}
       when url then "url"
       when exp then "exp"
-      when app then "say"
-      when lin then {say: lin.say is false}
-      when mor then mor?.map @classesInSpeech
-      when fat then @classesInSpeech fat.taf
+      when ire then @classesInSpeech ire.sep
+      when fat then @classesInSpeech fat.sep
+      when inv then {say: true}
+      when app then "exp"
 
   render: ->
-    {thought} = @props
-    delivery = _.uniq _.pluck thought.audience, "delivery"
-    speech = thought.statement.speech
-    bouquet = thought.statement.bouquet
+    gam = @props
+    heard = gam.heard
+    speech = gam.sep
+    #bouquet = gam.statement.bouquet
     if !speech? then return;
 
     name = if @props.name then @props.name else ""
-    aude = _.keys thought.audience
-    audi = util.clipAudi(aude).map (_audi) -> (div {key:_audi}, _audi)
+    audi = util.clipAudi(gam.aud).map (_audi) -> (div {key:_audi}, _audi)
 
     mainStation = util.mainStationPath(window.urb.user)
-    type = if mainStation in aude then 'private' else 'public'
+    type = if mainStation in gam.aud then 'private' else 'public'
 
+    ###
     if(_.filter(bouquet, ["comment"]).length > 0)
       comment = true
       for k,v of speech.mor
@@ -88,12 +95,13 @@ module.exports = recl
         if v.app then path = v.app.txt.replace "comment on ", ""
       audi = (a {href:url}, path)
       speech = {com:{txt,url}}
+    ###
 
     className = clas 'gram',
       (if @props.sameAs then "same" else "first"),
-      (if delivery.indexOf("received") isnt -1 then "received" else "pending"),
+      (if heard then "received" else "pending"),
       {'new': @props.unseen}
-      {comment}
+      {comment:false} #{comment}
       @classesInSpeech speech
 
     style =
@@ -106,8 +114,8 @@ module.exports = recl
            (React.createElement Member,{ship:@props.ship,glyph:@props.glyph,key:"member"})
           )
           h3 {className:"path",onClick:@_handleAudi,key:"audi"}, audi
-          h3 {className:"time",key:"time"}, @convTime thought.statement.date
+          h3 {className:"time",key:"time"}, @convTime gam.wen
         )
         (div {className:"speech",key:"speech"},
-          @renderSpeech speech,bouquet
+          @renderSpeech speech #,bouquet
     ))

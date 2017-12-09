@@ -1,6 +1,6 @@
 # `talk`
 
-`talk` is the frontend for `:talk`, the urbit messaging and notifications system.
+`talk` is the frontend for `:hall`, the urbit messaging and notifications system.
 
 `talk` is a simple flux app that gets loaded by `tree` as a module.
 
@@ -8,7 +8,7 @@
 
 The `desk/` folder in this repo mirrors a desk on an urbit `planet`.  Source files live outside of this folder, we compile them in using watchify / sass and then copy the `/desk` onto the desk we're using for development on a planet.
 
-Our sass depends on bootstrap mixins, so the urbit fork of bootstrap is included as a submodule. 
+Our sass depends on bootstrap mixins, so the urbit fork of bootstrap is included as a submodule.
 
 First:
 

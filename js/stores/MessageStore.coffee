@@ -36,8 +36,8 @@ MessageStore = _.merge new EventEmitter,{
 
   getLastAudience: ->
     if _.keys(_messages).length is 0 then return []
-    messages = _.sortBy _messages, (_message) -> _message.thought.statement.time
-    _.keys messages[messages.length-1].thought.audience
+    messages = _.sortBy _messages, (_message) -> _message.wen
+    messages[messages.length-1].aud
 
   setTyping: (state) -> _typing = state
 
@@ -55,17 +55,18 @@ MessageStore = _.merge new EventEmitter,{
 
   clearFilter: (station) -> _filter = null
 
-  sendMessage: (message) ->
-    _messages[message.thought.serial] = message
+  sendMessage: (message) -> _messages[message.uid] = message
 
-  loadMessages: (messages,last,get) ->
-    key = last
+  loadMessages: (messages,get) ->
+    max = 0
     for v in messages
-      serial = v.thought.serial
-      v.key = key++
+      v.gam.key = v.num
+      max = v.num if v.num > max
+      v = v.gam or v # open envelope
+      serial = v.uid
       # always overwrite with new
       _messages[serial] = v
-    _last = last if last < _last or _last is null or get is true
+    _last = max if max < _last or _last is null or get is true
     _fetching = false
 
   getAll: ->
@@ -74,11 +75,7 @@ MessageStore = _.merge new EventEmitter,{
       mess
     else
       _.filter mess, (mess) ->
-        audi = _.keys mess.thought.audience
-        if audi.indexOf(_filter) isnt -1
-          return true
-        else
-          return false
+        return mess.aud.indexOf(_filter) isnt -1
 
   getFetching: -> _fetching
 

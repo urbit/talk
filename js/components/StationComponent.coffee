@@ -40,8 +40,8 @@ module.exports = recl
     if @props.open is true and nextProps.open is false then @setState {open:null}
 
   validateSource: (s) ->
-    {sources} = @state.configs[@state.station]
-    s not in sources and "/" in s and s[0] is "~" and s.length >= 5
+    {src} = @state.configs[@state.station]
+    s not in src and "/" in s and s[0] is "~" and s.length >= 5
 
   onKeyUp: (e) ->
     $('.menu.depth-1 .add').removeClass 'valid-false'
@@ -50,9 +50,7 @@ module.exports = recl
       v = $input.val().toLowerCase()
       if v[0] isnt "~" then v = "~#{v}"
       if @validateSource v
-        _sources = _.clone @state.configs[@state.station].sources
-        _sources.push v
-        StationActions.setSources @state.station,_sources
+        StationActions.addSources @state.station,[v]
         $input.val('')
         $input.blur()
       else
@@ -74,9 +72,7 @@ module.exports = recl
     e.stopPropagation()
     e.preventDefault()
     _station = $(e.target).attr "data-station"
-    _sources = _.clone @state.configs[@state.station].sources
-    _sources.splice _sources.indexOf(_station),1
-    StationActions.setSources @state.station,_sources
+    StationActions.remSources @state.station,[_station]
 
   render: ->
     parts = []
@@ -117,7 +113,7 @@ module.exports = recl
 
     # sources list
     if @state.station and @state.configs[@state.station]
-      sources = for source in @state.configs[@state.station].sources
+      sources = for source in @state.configs[@state.station].src
           (div {key:source,className:"room"},
             (div {
               className:(if @state.open is source then "selected" else "")
@@ -140,7 +136,7 @@ module.exports = recl
           placeholder:"+ Listen"
           @onKeyUp
         })
-      sourcesSum = @state.configs[@state.station].sources.length
+      sourcesSum = @state.configs[@state.station].src.length
     else
       sources = ""
       sourcesSum = 0

@@ -36,56 +36,28 @@ Persistence = _persistence MessageActions: module.exports =
     Persistence.get station,start,end
 
   sendMessage: (txt,audience,global=(urb.user is urb.ship)) ->
-    serial = util.uuid32()
-
     # audience.push util.mainStationPath window.urb.user
     audience = _.uniq audience
     # audience = ["~#{window.urb.ship}/home"]
 
-    _audi = {}
-    for k,v of audience
-      _audi[v] =
-        envelope:
-          visible:true
-          sender:null
-        delivery:"pending"
-
-    speech = lin: {txt, say:true}
+    speech = lin: {msg:txt, pat:false}
 
     if txt[0] is "@"
-      speech.lin.txt = speech.lin.txt.slice(1).trim()
-      speech.lin.say = false
+      speech.lin.msg = speech.lin.msg.slice(1).trim()
+      speech.lin.pat = true
 
     else if txt[0] is "#"
-      speech = eval: speech.lin.txt.slice(1).trim()
+      speech = exp: {exp:speech.lin.msg.slice(1).trim()}
 
     else if window.urb.util.isURL(txt)
       speech = url: txt
 
-    speeches =
-      if not (speech.lin?.txt.length > 64)
-        [speech]
-      else
-        {say,txt} = speech.lin
-        txt.match(/(.{1,64}$|.{0,64} |.{64}|.+$)/g).map (s,i)->
-          say ||= i isnt 0
-          lin: {say, txt:
-            if s.slice -1 isnt " "
-              s
-            else s.slice 0,-1
-          }
+    message =
+      aut:window.urb.user # only used internally
+      uid:util.uuid32()
+      aud:audience
+      wen:Date.now()
+      sep:speech
 
-    for speech in speeches
-      message =
-        ship:window.urb.user
-        thought:
-          serial:util.uuid32()
-          audience:_audi
-          statement:
-            bouquet:[]
-            speech:speech
-            date: Date.now()
-
-      Dispatcher.handleViewAction {message,type:"message-send"}
-      messageType = (if global then "publish" else "review")
-      Persistence.sendMessage messageType, message.thought
+    Dispatcher.handleViewAction {message,type:"message-send"}
+    Persistence.sendMessage message

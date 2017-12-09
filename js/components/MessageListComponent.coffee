@@ -68,21 +68,22 @@ module.exports = recl
       end = @state.last-@pageSize
       end = 0 if end < 0
       @lastLength = @length
-      MessageActions.getMore @state.station,(@state.last+1),end
+      if end >= 0
+        MessageActions.getMore @state.station,(@state.last+1),end
 
   setAudience: ->
     return if @state.typing or not @last
-    laudi = _.keys @last.thought.audience
+    laudi = @last.aud
     return if (_.isEmpty laudi) or not
               _(laudi).difference(@state.audi).isEmpty()
-      StationActions.setAudience _.keys(@last.thought.audience)
+      StationActions.setAudience @last.aud
 
   sortedMessages: (messages) ->
     station = @state.station
     _.sortBy messages, (message) =>
-          message.pending = message.thought.audience[station]
+          #message.pending = message.audi[station]
           message.key
-          #message.thought.statement.date
+          #message.wen
 
   componentWillMount: -> Infinite = window.Infinite # require 'react-infinite'
 
@@ -140,12 +141,26 @@ module.exports = recl
 
   _handleAudi: (audi) -> StationActions.setAudience audi
 
+  _getSpeechArr: (spec) ->
+    if spec.lin?
+      return spec.lin.msg.split(/(\s|-)/)
+    else if spec.url?
+      return spec.url.split(/(\s|-)/)
+    else if spec.exp?
+      return [spec.exp.exp]
+    else if spec.app?
+      return @_getSpeechArr(spec.app.sep)
+    else if spec.fat?
+      return @_getSpeechArr(spec.fat.sep)
+    else
+      return []
+
   render: ->
     station = @state.station
     messages = @sortedMessages @state.messages
 
     @last = messages[messages.length-1]
-    if @last?.ship && @last.ship is window.urb.user then @lastSeen = @last
+    if @last?.aut && @last.aut is window.urb.user then @lastSeen = @last
     @length = messages.length
 
     setTimeout (=> @checkMore() if @length < @pageSize), 1
@@ -160,19 +175,14 @@ module.exports = recl
 
     _messageGroups = [[]]
     for message,index in messages
-      nowSaid = [message.ship,_.keys(message.thought.audience)]
+      if message.sep.app then message.aut = message.sep.app.app
+      nowSaid = [message.aut,message.aud]
       sameAs = _.isEqual lastSaid, nowSaid
       lastSaid = nowSaid
       lineNums = 1
-      speechArr = []
+      speechArr = @_getSpeechArr(message.sep)
       context.font = FONT_SIZE + 'px bau'
-      if message.thought.statement.speech.lin?
-        speechArr = message.thought.statement.speech.lin.txt.split(/(\s|-)/)
-      else if message.thought.statement.speech.url?
-        speechArr = message.thought.statement.speech.url.txt.split(/(\s|-)/)
-      else if message.thought.statement.speech.fat?
-        context.font = (FONT_SIZE * 0.9) + 'px scp'
-        speechArr = message.thought.statement.speech.fat.taf.exp.txt.split(/(\s|-)/)
+
 
       _.reduce(_.tail(speechArr), (base, word) ->
         if context.measureText(base + word).width > speechLength
@@ -198,14 +208,13 @@ module.exports = recl
         height = null
         marginTop = null
 
-      {speech} = message.thought.statement
-      audience = (_.keys message.thought.audience).join " "
+      aud = message.aud.join " "
       mez = rele Message, (_.extend {}, message, {
         station, sameAs, @_handlePm, @_handleAudi, height, marginTop,
         index: message.key
         key: "message-#{message.key}"
-        ship: if speech?.app then "system" else message.ship
-        glyph: @state.glyph[audience] || @props['default-glyph']
+        ship: message.aut
+        glyph: @state.glyph[aud] || @props['default-glyph']
         unseen: lastIndex and lastIndex is index
       })
       mez.computedHeight = height+marginTop
@@ -216,9 +225,9 @@ module.exports = recl
 
     if @props.chrono isnt "reverse"
       _messageGroups = _messageGroups.reverse()
-      
+
     _messages = _.flatten _messageGroups
-    
+
     if (not @props.readOnly?) and INFINITE
       body = rele Infinite, {
           useWindowAsScrollContainer: true
@@ -228,7 +237,7 @@ module.exports = recl
         }, _messages
     else
       body = _messages
-      
+
     fetching = if @state.fetching then (rele Load, {})
 
     (div {className:"grams", key:"messages"}, body, fetching)

@@ -18,8 +18,13 @@ Persistence = _persistence StationActions: module.exports =
   listeningStation: viewAction (station) -> {station,type:"station-listen"}
 
   createStation: (station) ->
-    Dispatcher.handleViewAction {station,type: "station-create"}
+    addStation(station)
     Persistence.createStation station
+
+  addStation: (station) ->
+    Dispatcher.handleViewAction {station,type: "station-create"}
+  remStation: (station) ->
+    Dispatcher.handleViewAction {station,type: "station-remove"}
 
   listen:    () -> Persistence.listen()
   ping: (_ping) -> Persistence.ping _ping
@@ -27,5 +32,7 @@ Persistence = _persistence StationActions: module.exports =
   listenStation: (station) -> Persistence.listenStation station, {'group','glyph','cabal'}
   createStation:    (name) -> Persistence.createStation name
 
-  setSources: (station,sources) ->
-    Persistence.setSources station,window.urb.ship,sources
+  addSources: (station,sources) ->
+    Persistence.addSources station,sources
+  remSources: (station,sources) ->
+    Persistence.remSources station,sources

@@ -40,11 +40,11 @@ StationStore = _.merge new EventEmitter,{
   getConfigs: -> _config
 
   getConfig: (station) -> _config[station]
-  
+
   getGlyph: (station) -> _shpylg[station]
-  
+
   getGlyphMap: -> _shpylg
-  
+
   getGlyphAudience: (glyph) ->
     aud = _glyphs[glyph] ? []
     if aud.length is 1
@@ -52,13 +52,13 @@ StationStore = _.merge new EventEmitter,{
 
   getMember: (ship) -> {ship:ship}
 
-  loadMembers: (members) -> _members = members
+  loadMembers: (station,members) -> _members[station] = members
 
-  getMembers: -> _members
+  getMembers: (station) -> _members[station]
 
   getListening: -> _listening
 
-  setListening: (station) -> 
+  setListening: (station) ->
     if _listening.indexOf(station) isnt -1
       console.log 'already listening on that station (somehow).'
     else
@@ -67,8 +67,12 @@ StationStore = _.merge new EventEmitter,{
   createStation: (station) ->
     _stations.push(station) if _stations.indexOf(station) is -1
 
-  loadStations: (stations) -> _stations = stations 
-  
+  removeStation: (station) ->
+    i = _stations.indexOf(station)
+    _stations.splice(i, 1) if i > -1
+
+  loadStations: (stations) -> _stations = stations
+
   loadGlyphs: (glyphs) ->
     _glyphs = glyphs
     _shpylg = {}
@@ -82,8 +86,7 @@ StationStore = _.merge new EventEmitter,{
 
   setStation: (station) -> _station = station
 
-  unsetStation: (station) -> 
-    _station = null if _station is station 
+  unsetStation: (station) -> _station = null if _station is station
 
   getStation: -> _station
 
@@ -93,7 +96,7 @@ StationStore = _.merge new EventEmitter,{
 
   getTyping: () -> _typing
 
-  setTyping: (station,state) -> 
+  setTyping: (station,state) ->
     for k,v of _typing
       _typing[k] = (k is station)
     _typing[station] = state
@@ -148,6 +151,10 @@ StationStore.dispatchToken = StationDispatcher.register (payload) ->
       break
     when "station-create"
       StationStore.createStation action.station
+      StationStore.emitChange()
+      break
+    when "station-remove"
+      StationStore.removeStation action.station
       StationStore.emitChange()
       break
     when "members-load"
