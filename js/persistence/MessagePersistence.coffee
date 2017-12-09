@@ -6,8 +6,7 @@ send = (data,cb)-> window.urb.send data, {mark:"hall-action"}, cb
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->
     $this = this
-    begin = since;
-    begin = window.urb.util.toDate(since) if (typeof since == "object")
+    begin = window.urb.util.toDate(since)
     path = (util.talkPath 'circle', station, 'grams', begin)
     window.urb.bind path, (err,res) ->
         if err or not res.data
@@ -19,7 +18,7 @@ module.exports = ({MessageActions}) ->
         if res.data.ok is true
           MessageActions.listeningStation station
         if res.data?.circle?.nes # prize
-          if (res.data.circle.nes.length == 0) and (typeof since == "object")
+          if (res.data.circle.nes.length == 0)
             console.log 'trying for older than ' + begin
             $this.listenStation(station, new Date(since - 6*3600*1000))
           else
