@@ -19,6 +19,8 @@ module.exports = ({MessageActions}) ->
           MessageActions.listeningStation station
         if res.data?.circle?.nes # prize
           if (res.data.circle.nes.length == 0)
+            window.urb.drop path, (err,res) ->
+              console.log err if err
             console.log 'trying for older than ' + begin
             $this.listenStation(station, new Date(since - 6*3600*1000))
           else
