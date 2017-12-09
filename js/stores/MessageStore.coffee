@@ -6,7 +6,7 @@ MessageDispatcher = require '../dispatcher/Dispatcher.coffee'
 
 _messages = {}
 _fetching = false
-_last = null
+_oldest = null
 _station  = null
 _filter = null
 _listening = []
@@ -58,15 +58,15 @@ MessageStore = _.merge new EventEmitter,{
   sendMessage: (message) -> _messages[message.uid] = message
 
   loadMessages: (messages,get) ->
-    max = 0
+    min = _oldest
     for v in messages
       v.gam.key = v.num
-      max = v.num if v.num > max
+      min = v.num if v.num < min or min is null
       v = v.gam or v # open envelope
       serial = v.uid
       # always overwrite with new
       _messages[serial] = v
-    _last = max if max < _last or _last is null or get is true
+    _oldest = min if min < _oldest or _oldest is null or get is true
     _fetching = false
 
   getAll: ->
@@ -81,7 +81,7 @@ MessageStore = _.merge new EventEmitter,{
 
   setFetching: (state) -> _fetching = state
 
-  getLast: -> _last
+  getOldest: -> _oldest
 }
 
 MessageStore.setMaxListeners 100
