@@ -6,7 +6,9 @@ send = (data,cb)-> window.urb.send data, {mark:"hall-action"}, cb
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->
     $this = this
-    path = (util.talkPath 'circle', station, 'grams', since)
+    begin = since;
+    begin = window.urb.util.toDate(since) if (typeof since == "object")
+    path = (util.talkPath 'circle', station, 'grams', begin)
     window.urb.bind path, (err,res) ->
         if err or not res.data
           console.log path, 'err!'
@@ -17,10 +19,14 @@ module.exports = ({MessageActions}) ->
         if res.data.ok is true
           MessageActions.listeningStation station
         if res.data?.circle?.nes # prize
-          res.data.circle.nes.map (env) ->
-            env.gam.heard = true
-            env
-          MessageActions.loadMessages res.data.circle.nes
+          if (res.data.circle.nes.length == 0) and (typeof since == "object")
+            console.log 'trying for older than ' + begin
+            $this.listenStation(station, new Date(since - 6*3600*1000))
+          else
+            res.data.circle.nes.map (env) ->
+              env.gam.heard = true
+              env
+            MessageActions.loadMessages res.data.circle.nes
         if res.data?.circle?.gram # rumor (new msg)
           res.data.circle.gram.gam.heard = true
           MessageActions.loadMessages [res.data.circle.gram]

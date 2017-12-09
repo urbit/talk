@@ -15,7 +15,7 @@ Persistence = _persistence MessageActions: module.exports =
     Dispatcher.handleServerAction {messages,last,get,type:"messages-load"}
 
   listenStation: (station,date) ->
-    if not date then date = window.urb.util.toDate (
+    if not date then date = (
       now = new Date()
       # now.setMinutes 0
       now.setSeconds 0
