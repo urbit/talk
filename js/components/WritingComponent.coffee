@@ -176,7 +176,7 @@ module.exports = recl
       return
 
     if @props['audience-lock']?
-      audi = _.union audi, ["~#{window.urb.ship}/#{@props.station}"]
+      audi = ["~#{window.urb.ship}/#{@props.station}"]
 
     audi = @addCC audi
 

@@ -1,7 +1,6 @@
 util = require '../util.coffee'
 
 window.urb.appl = "hall"
-send = (data,cb)-> window.urb.send data, {mark:"hall-action"}, cb
 
 module.exports = ({MessageActions}) ->
   listenStation: (station,since) ->
@@ -51,7 +50,17 @@ module.exports = ({MessageActions}) ->
           console.log res
 
   sendMessage: (message,cb) ->
-    send {convey: [message]}, (err,res) ->
-      console.log 'sent'
-      console.log arguments
-      cb(err,res) if cb
+    if window.urb.user == window.urb.ship
+      window.urb.send {convey: [message]},
+        {mark: "hall-action"},
+        (err,res) ->
+          console.log 'sent local'
+          console.log arguments
+          cb(err,res) if cb
+    else
+      window.urb.send {publish: [message]},
+        {mark: "hall-command"},
+        (err,res) ->
+          console.log 'sent remote'
+          console.log arguments
+          cb(err,res) if cb
