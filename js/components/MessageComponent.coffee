@@ -37,6 +37,7 @@ module.exports = recl
       when url
         (a {href:url,target:"_blank",rel:"noopener",key:"speech"}, url)
       when exp
+        exp.res = exp.res or ["evaluating..."]
         (div {},
           (exp.exp)
           (div {className:"fat"}, pre {}, exp.res.join("\n"))
