@@ -296,6 +296,7 @@ module.exports = recl
     if valid is true
       stan = $('#audience .input').text() || util.mainStationPath window.urb.user
       stan = (stan.split /\ +/).map (v)->
+        v = v+"/inbox" if v.indexOf("/") is -1
         if v[0] is "~" then v else "~"+v
       StationActions.setAudience stan
       stan
