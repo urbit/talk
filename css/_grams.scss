@@ -85,6 +85,21 @@ div.gram.same:hover div.meta {
   position: absolute;
   z-index: 1;
   margin-left: $grid-gutter-width;
+
+  .fat {
+    max-height: 0;
+    transition: max-height .1s ease-in-out;
+    overflow: hidden;
+  }
+
+  .fat pre { color: #fff; }
+
+  &:hover .fat {
+      max-height: 16rem;
+      overflow: scroll;
+      background-color: #000;
+      color: #fff;
+  }
 }
 
 .exp {
@@ -100,21 +115,6 @@ div.gram.same:hover div.meta {
     color: #fff;
     background-color: #000;
     padding: .3rem;
-  }
-
-  .fat {
-    max-height: 0;
-    transition: max-height .1s ease-in-out;
-    overflow: hidden;
-  }
-
-  .fat pre { color: #fff; }
-
-  &:hover .fat {
-      max-height: 16rem;
-      overflow: scroll;
-      background-color: #000;
-      color: #fff;
   }
 }
 
