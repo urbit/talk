@@ -50,6 +50,10 @@ module.exports = recl
       v = $input.val().toLowerCase()
       if v[0] isnt "~" then v = "~#{v}"
       if @validateSource v
+        # to avoid waiting on thousands of messages, just load in the backlog
+        # from the past day.
+        d = new Date (new Date() - 24*3600*1000)
+        v = v + "/" + window.urb.util.toDate(d)
         StationActions.addSources @state.station,[v]
         $input.val('')
         $input.blur()
